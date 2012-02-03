@@ -1,0 +1,59 @@
+%%
+%% Made by Yann LEGER
+%%
+
+\documentclass[11pt,a4paper,oneside,openany]{article}
+
+% Define some constant
+\newcommand{\Version}{1.0}
+\newcommand{\SVNRev}{1}
+\date{\today}
+% End constant definition
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{rotating}
+\geometry{
+	hmargin=2.5cm,
+	vmargin=2.5cm
+}
+% Liens
+\usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=black,
+      citecolor=black, urlcolor=black]{hyperref}
+
+% pdfinclude
+\usepackage{pdfpages}
+
+% Appendice
+\usepackage{appendix}
+
+% More options with array
+\usepackage{array}
+\usepackage{tabularx}
+
+% Figure
+%\usepackage{float}
+
+\pagestyle{fancyplain} \chead{}\lhead{\textcolor{blue}{CSE 221} -
+\emph{System Measurement Project}}
+\rhead{V\Version}
+
+\definecolor{blue}{rgb}{0,0,0.8}
+
+\newcommand{\newchapter}[1]{\chapter{\textcolor{blue}{#1}}}
+\newcommand{\starchapter}[1]{\chapter*{\textcolor{blue}{#1}}}
+
+\author{Qihua Wu\\
+Yann Léger}
+\title{CSE221: System Measurement Project}
+
+\begin{document}
+\maketitle
+\input{introduction}
+\input{machine-description}
+
+\end{document}
