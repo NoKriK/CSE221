@@ -1,0 +1,19 @@
+\section{Experiments}
+
+
+
+\subsection{CPU, Scheduling, and OS Services}
+
+\subsubsection{Measurement overhead}
+Our project is using inline function rdtsc() for getting the system time stamp. rdtsc() is the most precise way to get the number of cpu clock cycles and it works by calling assembly instruction rdtsc. As what we got from the test for overhead of reading time, rdtsc() has an overhead of about 16 clock cycles, including both procedure call and instruction run time.
+Since we are using loops for averaging the running time for large scale of tests, the overhead of loop condition is quite important as well. It turns out the overhead it takes for a loop condition is about the same(15 clock cycles) as the overhead for read time rdtsc()(16 clock cycles).
+
+\subsubsection{Procedure call overhead}
+We defined multiple void functions with different number of arguments for testing the increment overhead of an argument. Unfortunately, when we are testing the overhead for procedure calls with different arguments, we are not getting a straight increasing overhead as the number of arguments increases. We are thinking that might be a result from not using inline declaration for the void functions we are using.
+
+\subsubsection{System call overhead}
+We choosed nanosleep() system call for testing the overhead for a minimal system call. It turned out a system call, nanosleep(NULL,NULL) in our test case, is way more expensive(3365 clock cycles) than a minimal function procedure call with same amount of the argument(within 10 clock cycles).
+
+\subsubsection{Task creation time}
+For testing the overhead of creating a new process, we simply called fork(). It turned out that it takes about 750,000 clock cycles for creating it without caching and less than 500,000 with caching.While for the overhead of creating a new thread, we simply called pthread\_creat(). It turned out that it takes about 2000,000 clock cycles for creating it without caching and less than 80,000 with caching.
+The fact thread creation without caching is taking way longer time than the one for process creation doesn't really make sense to us right now, and we will look into that later as the project goes. But considering that thread creation does't envolve memory alloction, the average case for thread creation is generally faster then the one for process creation.
