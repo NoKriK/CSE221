@@ -1,46 +1,78 @@
 \section{Machine Description}
+The machine is a virtual machine running on top of a xen hypervisor, the
+description mainly concern the hardware of the hypervisor.
 
 \subsection{Processor}
+The hypervisor is running an Intel quad core processor of the Sandy Bridge generation.
+This is an x86-64 architecture.
+The exact model of the CPU is \emph{Intel(R) Core(TM) i5-2500 CPU @ 3.30GHz}. \cite{intel-i5-2500}
+The processor integrates the memory controller.
 
-\begin{verbatim}
-Two i386 processor operate at 3300 MHz on the virtual machine. 
-number of processors  : 4
-vendor_id             : GenuineIntel
-cpu family            : 6
-model                 : 42
-model name            : Intel(R) Core(TM) i5-2500 CPU @ 3.30GHz
-cpu MHz               : 3300.152
-cpuid level           : 13
-L1 cache              : 64 KB
-L2 cache              : 256 KB
-L3 cache              : 6 MB
-data cache            : 32 KB
-instruction cache     : 32 KB
-bogomips              : 6600.30
-clflush size          : 64
-cache_alignment       : 64
-address sizes         : 36 bits physical, 48 bits virtual
-\end{verbatim}
+Detailled characteristics of the hardware processor :
+\begin{description}
+\item[CPU clock frequency] 3300.152 Mhz
+\item[L1 cache] 64 KB
+\begin{description}
+\item[Data cache] 32 KB
+\item[Instruction cache] 32 KB
+\end{description}
+\item[L2 cache] 256 KB
+\item[L3 cache] 6 MB
+\item[Address sizes] 36 bits physical, 48 bits virtual
+\end{description}
+The virtual machine is restricted to two virtual processor.
 
 \subsection{Motherboard buses}
-	Intel Q67 Express Chipset\\
-	Mother board is Intel DQ67OW
-\footnote{http://www.intel.com/content/www/us/en/motherboards/desktop-motherboards/desktop-board-dq67ow.html}\\
-	Chipset is Intel® Q67 Express Chipset \footnote{http://www.intel.com/content/www/us/en/chipsets/mainstream-chipsets/q67-express-chipset.html}\\
-    	Memory bus\\
-	I/O bus\\
+The motherboard is an \emph{Intel DQ67OW} \cite{dq670w-motherboard}. It is using an \emph{Intel Q67
+Express Chipset}. \cite{q67-chipset}
+The processor is connected to the southbridge chipset using a \emph{DMI 2.0} bus which
+allow a transfer rate up to 20Gb/s.
 
 \subsection{Ram}
-	16GB Physical RAM size\\
+The host system is equipped with 16GB of DDR3.
+The memory controller is directly integrated in the CPU, according to the
+specification of the processor, the memory bus frequence is 1333Mhz which allow a bandwidth up
+to 21 GB/s. \cite{intel-i5-2500}
 
 \subsection{Disk}
-	Software RAID 10 using mdadm + LVM\\
-Hitachi Deskstar P7K500 \\
-Hitachi Deskstar P7K500\\
-Hitachi Deskstar P7K500\\
-Hitachi Deskstar P7K500 Hitachi HDP725050GLA360 \\
-Hitachi Deskstar 7K1000.C Hitachi HDS721050CLA362\\
-7200 RPM, 16 MB of cache and 500GB each
+\subsubsection{Base hardware}
+The system is running on top of 6 hard disk drives.
+Four of them are \emph{Hitachi Deskstar P7K500}\footnote{The full reference is
+Hitachi HDP725050GLA360}.
+One of them is an \emph{Hitachi Deskstar 7K1000.C}\footnote{The full reference
+is Hitachi HDS721050CLA362}.
+The fifth one is only used for backup purpose so we are not interrested in his
+specification.
+
+The P7K500 has the following characteristics \cite{p7k500} :
+\begin{description}
+\item[Rotational speed] 7200 RPM
+\item[Cache size] 16 MB of cache
+\item[Size] 500GB
+\item[Max Media transfer rate] 1138 Mbit/s
+\end{description}
+The 7K1000.C has the same characteristics \cite{7K1000.C} excepted for the maximum media transfer
+rate which is 1546 Mbit/s due to differences in the architecture of the disks.
+
+\subsubsection{Hypervisor usage of the disks}
+These disks are aggregated at the hypervisor level using the linux mdadm
+software utility.
+The hypervisor root file system runs on top of a RAID 1 array of four disks and
+one hot spare.
+The virtual machine disks are aggregated into a software RAID 10 array of 4 disks and one hot spare.
+
+\paragraph{Read performance}
+Any read operation incurs two read a block on two different disks so the
+performances are triggered down by the worst disk model.
+Without any overload and in a perfect situation, the performance of sequential read
+operation would be the sum of the bandwith of the four disks.
+
+\paragraph{Write performance}
+For a write operation, any write operation implies to write on the four disks.
+Again performance are triggered down by the worst disk model.
+Without any overload and in a perfect situation, the performance of sequential
+write would be two times the bandwith of the worst disk.
+
 
 \subsection{Network}
     Network card speed\\
