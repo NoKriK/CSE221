@@ -59,7 +59,12 @@ These disks are aggregated at the hypervisor level using the linux mdadm
 software utility.
 The hypervisor root file system runs on top of a RAID 1 array of four disks and
 one hot spare.
-The virtual machine disks are aggregated into a software RAID 10 array of 4 disks and one hot spare.
+The data are stored on a software RAID 10 array of 4 disks and one hot spare.
+The hypervisor also runs a logical volume manager on top of the RAID10 array to
+ease the management.
+
+\subsubsection{Virtual machine disk}
+The virtual machine disk is a logical volume.
 
 \paragraph{Read performance}
 Any read operation incurs two read a block on two different disks so the
@@ -73,15 +78,24 @@ Again performance are triggered down by the worst disk model.
 Without any overload and in a perfect situation, the performance of sequential
 write would be two times the bandwith of the worst disk.
 
+\subsubsection{Performance penality}
+TBD.
 
 \subsection{Network}
-    Network card speed\\
+The network card is integrated to the moterboard. It's an \emph{Intel® 82579LM Gigabit
+Ethernet Controller} which is a gigabit ethernet controller.
+The server is connected to a switch which port are running at 100 mb/s.
 
 \subsection{Operating System}
-    Operating system (including version/release) \\
-SunOS solaris1 5.11 11.0 i86pc i386 i86pc\\
-
+The operating system is Solaris 11.
+Output of the uname command :
+\begin{verbatim}
+SunOS solaris1 5.11 11.0 i86pc i386 i86pc
+\end{verbatim}
+Content of the /etc/release file :
+\begin{verbatim}
                            Oracle Solaris 11 11/11 X86\\
   Copyright (c) 1983, 2011, Oracle and/or its affiliates.  All rights reserved.\\
                             Assembled 18 October 2011
+\end{verbatim}
 
