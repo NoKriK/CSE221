@@ -1,7 +1,14 @@
 \subsection{Random Access Memory}
 
 \subsubsection{RAM access time}
-We measured the back-to-back-load RAM access latency.
+We measured the back-to-back-load RAM access latency, because it is well accepted by most software developers and system researchers. The way we measure the RAM access latency is making the program iterating a array of specific size for bunch of times and averaging it to eliminate the noise. The size of the array we used are larger than 256KB, which is larger than the total amount of L1 cache and L2 cache. We did multiple number of tests on iterating the first k element of the array, so that certain part of the data will be cached into L1 cache or L2 cache.
+We expected to see the RAM access time increases as it goes from L1, L2 to main memory. Basically saying there would be a significant difference among the following three cases: 
+1. iteration of the first 32KB data or less (fit into L1 cache)
+2. iteration of the first 288KB data or less (fit into L1+L2 cache)
+3. iteration of all the whole array(doesn’t fit into caches).
+The result we got from our measurement shown that //TODO
+
+
 
 
 
