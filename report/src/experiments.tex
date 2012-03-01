@@ -20,6 +20,8 @@ The fact thread creation without caching is taking way longer time than the one 
 
 
 \subsubsection{Context switch time}
+We measured the context switching overhead for both processes and threads. The way we define context switching is by creating a child process/thread and make the child do some task and return back to the parent. The overhead of such context switching is going to be the time start from the creation of the child to the time execution gets back to the parent process/thread excluding the time for child to execute. We only tested the context switching within 2 different processes.
+//***TODO actual result
 
 \input{ram}
 
