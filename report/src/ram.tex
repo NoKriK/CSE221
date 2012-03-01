@@ -22,21 +22,4 @@ The result we got from our measurement shown that //TODO actual result
 
 \subsubsection{Page fault service time}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+In order to manually create a page fault situation, we used two really large array which as the same size as main memory. Then we are going to iterate through the first array, basically means put it into main memory first. Afterwards, we iterate through the second array so that the first array will be totally paged out to hardddisk after that. The page fault service time is going to be the time it takes for us to get the value of element from first array at this point.This forces the page to swap gives us the right page fault service time. 
