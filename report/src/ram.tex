@@ -15,6 +15,7 @@ The result we got from our measurement shown that //TODO actual result
 
 \subsubsection{RAM bandwidth}
 
+We used an array with size 16MB, so that it is larger than the cache size (6MB including fancy L3 cache). At the same time, it still fits into the main memory. We iterated through the list and do both read and write. We did read by just doing a[i]+0 and write by doing a[i] = a[i]+1. We would expect read is faster than write operation, because the system need to make sure the data is actually write to the memory after performed the write operation. While there is no such issue for read operation.
 
 
 
