@@ -5,7 +5,19 @@
 \subsection{CPU, Scheduling, and OS Services}
 
 \subsubsection{Measurement overhead}
-Our project is using inline function rdtsc() for getting the system time stamp. rdtsc() is the most precise way to get the number of cpu clock cycles and it works by calling assembly instruction rdtsc. As what we got from the test for overhead of reading time, rdtsc() has an overhead of about 16 clock cycles, including both procedure call and instruction run time.
+
+\paragraph{Reading time of the clock}
+We are using the \emph{rdtsc} assembly instruction to do the measurement.
+The \emph{rdtsc} instruction allows us to read the \emph{Time Stamp Counter}
+which is a 64 bit counter containing the number of cycles elapsed since his
+reset.
+In terms of implementation, the instruction is integrated in the code using
+inline assembly and is called using a function which is inlined to avoid the
+overhead of the procedure call and the stack frame creation.
+According to our measurement, between two call to our inlined rdtsc() function,
+there are 60 clock cycle consumed.
+
+\paragraph{Loop overhead}
 Since we are using loops for averaging the running time for large scale of tests, the overhead of loop condition is quite important as well. It turns out the overhead it takes for a loop condition is about the same(15 clock cycles) as the overhead for read time rdtsc()(16 clock cycles).
 
 \subsubsection{Procedure call overhead}
