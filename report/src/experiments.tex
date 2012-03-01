@@ -17,3 +17,45 @@ We choosed nanosleep() system call for testing the overhead for a minimal system
 \subsubsection{Task creation time}
 For testing the overhead of creating a new process, we simply called fork(). It turned out that it takes about 750,000 clock cycles for creating it without caching and less than 500,000 with caching.While for the overhead of creating a new thread, we simply called pthread\_creat(). It turned out that it takes about 2000,000 clock cycles for creating it without caching and less than 80,000 with caching.
 The fact thread creation without caching is taking way longer time than the one for process creation doesn't really make sense to us right now, and we will look into that later as the project goes. But considering that thread creation does't envolve memory alloction, the average case for thread creation is generally faster then the one for process creation.
+
+
+\subsubsection{Context switch time}
+
+
+
+
+\subsection{Random Access Memory}
+
+\subsubsection{RAM access time}
+We measured the back-to-back-load RAM access latency.
+
+
+
+
+\subsubsection{RAM bandwidth}
+
+
+
+
+
+
+\subsubsection{Page fault service time}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
