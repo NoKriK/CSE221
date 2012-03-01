@@ -21,10 +21,28 @@ there are 60 clock cycle consumed.
 Since we are using loops for averaging the running time for large scale of tests, the overhead of loop condition is quite important as well. It turns out the overhead it takes for a loop condition is about the same(15 clock cycles) as the overhead for read time rdtsc()(16 clock cycles).
 
 \subsubsection{Procedure call overhead}
-We defined multiple void functions with different number of arguments for testing the increment overhead of an argument. Unfortunately, when we are testing the overhead for procedure calls with different arguments, we are not getting a straight increasing overhead as the number of arguments increases. We are thinking that might be a result from not using inline declaration for the void functions we are using.
+We defined multiple functions with different number of arguments to test the
+cost of a procedure call and the overhead of an argument
+A procedure call is composed off :
+\begin{enumerate}
+\item Pushing the argument on the stack
+\item Calling the procedure, that is jumping to the beginning of the procedure
+\item Creating a stack frame
+\item Destroying the stack fram
+\item Restoring the instruction pointer
+\end{enumerate}
+
+That's not much work and the total cost of a procedure call should be around 15
+cycles. Each argument may increase the overhead of 1 of 2 cycles.
+The result shows us that the base result for a procedure call is around 15
+cycles and that each argument increase the cost by 1 or 2 cycles as excepted.
 
 \subsubsection{System call overhead}
-We choosed nanosleep() system call for testing the overhead for a minimal system call. It turned out a system call, nanosleep(NULL,NULL) in our test case, is way more expensive(3365 clock cycles) than a minimal function procedure call with same amount of the argument(within 10 clock cycles).
+We choosed the getpid() system call to test the overhead for a minimal system
+call as it's supposed the least expensive system call.
+System call are excepted to be more expensive than simple procedure call as they
+produce a context switch.
+The result shows that a system call takes around 800 clock cycles to complete.
 
 \subsubsection{Task creation time}
 For testing the overhead of creating a new process, we simply called fork(). It turned out that it takes about 750,000 clock cycles for creating it without caching and less than 500,000 with caching.While for the overhead of creating a new thread, we simply called pthread\_creat(). It turned out that it takes about 2000,000 clock cycles for creating it without caching and less than 80,000 with caching.
