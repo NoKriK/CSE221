@@ -1,12 +1,21 @@
 \section{Experiments}
 
-
-
 \subsection{CPU, Scheduling, and OS Services}
 
 \subsubsection{Measurement overhead}
 
-\paragraph{Reading time of the clock}
+Reading time of the clock
+\paragraph{Methodology}
+\paragraph{Predictions}
+\paragraph{Results}
+
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cose & Software cost & Prediction & Measured \\
+\hline
+\end{tabular}
+\paragraph{Accuracy of Estimates}
+\paragraph{Success of Methodology}
 We are using the \emph{rdtsc} assembly instruction to do the measurement.
 The \emph{rdtsc} instruction allows us to read the \emph{Time Stamp Counter}
 which is a 64 bit counter containing the number of cycles elapsed since his
@@ -14,6 +23,7 @@ reset.
 In terms of implementation, the instruction is integrated in the code using
 inline assembly and is called using a function which is inlined to avoid the
 overhead of the procedure call and the stack frame creation.
+
 According to our measurement, between two call to our inlined rdtsc() function,
 there are 60 clock cycle consumed.
 
