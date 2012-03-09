@@ -4,7 +4,68 @@
 
 \subsubsection{Measurement overhead}
 
-Reading time of the clock
+As we are microbenchmarking, the overhead of the measurement tools that we
+choosed may be influencing our results. Thus we need to know the cost of reading
+the clock and since we are using loops for averaging the results of the tests, we
+also need to know the overhead caused by these loops.
+
+\paragraph{Methodology}
+We are using the \emph{rdtsc} assembly instruction to do the measurement.
+The \emph{rdtsc} instruction allows us to read the \emph{Time Stamp Counter}
+which is a 64 bit counter containing the number of cycles elapsed since his
+reset.
+In terms of implementation, the instruction is integrated in the code using
+inline assembly and is called using a function which is inlined to avoid the
+overhead of the procedure call and the stack frame creation.
+
+To measure the cost of the reading clock operation, we measured the result between
+two calls and repeated the operation 100,000 times.\\
+
+The loop overhead has been measured with 100,000 iterations.
+
+\paragraph{Predictions}
+The operations between the two rdtsc call are basicly a copy from the result
+which are stored in the eax and edx register to the main memory.
+As the cache may be hited, it's basicly two cache write, around 10 cycles, and
+the cost of the second rdtsc call.\\
+
+As all optimization are turned off, the cost of a loop iteration is basicly a
+load from memory, an incrementation, a store to memory, a comparaison and a
+jump.
+The cache will probably be hited, thus the cost of memory operations will be low.
+The total cost may be around 25 cycles if we count 10 cycles per memory
+operation and 1 cycle for operation such as incremention, comparaison and
+jump.\\
+
+There is no software overhead in any of these operations.
+
+\paragraph{Results}
+
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cost & Software cost & Prediction & Measured \\
+\hline
+Reading the clock & 22 cycles & 0 cycles & 22 cycles & 58.555 cycles \\
+\hline
+Loop & 25 cycles & 0 cycles & 25 cycles & 14.437 cycles \\
+\hline
+\end{tabular}
+\paragraph{Accuracy of Estimates}
+Our estimates are two low for the reading time, due to the cost of the memory write operation which is
+higher than excepted.
+This hypothesis on the memory write operation cost is due to the fact that on long run,
+the result is lowered to aproximatly 30 cycles after 50,000 iterations.
+We choosed to report the average of a run which did not show this reduction in
+the cost because it seems more accurate (i.e. we will call rdtsc once for each
+loop).\\
+
+Our estimates are two high for the loops.
+This is propably partly due to the fact that we didn't account with the pipelining
+capacity of the processor.
+
+\paragraph{Success of Methodology}
+
+\subsubsection{Procedure call overhead}
 \paragraph{Methodology}
 \paragraph{Predictions}
 \paragraph{Results}
@@ -16,21 +77,6 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \end{tabular}
 \paragraph{Accuracy of Estimates}
 \paragraph{Success of Methodology}
-We are using the \emph{rdtsc} assembly instruction to do the measurement.
-The \emph{rdtsc} instruction allows us to read the \emph{Time Stamp Counter}
-which is a 64 bit counter containing the number of cycles elapsed since his
-reset.
-In terms of implementation, the instruction is integrated in the code using
-inline assembly and is called using a function which is inlined to avoid the
-overhead of the procedure call and the stack frame creation.
-
-According to our measurement, between two call to our inlined rdtsc() function,
-there are 60 clock cycle consumed.
-
-\paragraph{Loop overhead}
-Since we are using loops for averaging the running time for large scale of tests, the overhead of loop condition is quite important as well. It turns out the overhead it takes for a loop condition is about the same(15 clock cycles) as the overhead for read time rdtsc()(16 clock cycles).
-
-\subsubsection{Procedure call overhead}
 We defined multiple functions with different number of arguments to test the
 cost of a procedure call and the overhead of an argument
 A procedure call is composed off :
