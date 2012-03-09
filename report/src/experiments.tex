@@ -48,14 +48,14 @@ A procedure call is composed off :
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 \# of args & Hardware cost & Software cost & Prediction & Measured \\ \hline
-0 &   &   &   & 14.443 cycles \\ \hline
-1 &   &   &   & 14.440 cycles \\ \hline
-2 &   &   &   & 13.782 cycles \\ \hline
-3 &   &   &   & 14.439 cycles \\ \hline
-4 &   &   &   & 18.565 cycles \\ \hline
-5 &   &   &   & 16.502 cycles \\ \hline
-6 &   &   &   & 18.604 cycles \\ \hline
-7 &   &   &   & 20.627 cycles \\ \hline
+0 &   &   & 14 cycles & 14.443 cycles \\ \hline
+1 &   &   & 15 cycles & 14.440 cycles \\ \hline
+2 &   &   & 16 cycles & 13.782 cycles \\ \hline
+3 &   &   & 17 cycles & 14.439 cycles \\ \hline
+4 &   &   & 18 cycles & 18.565 cycles \\ \hline
+5 &   &   & 19 cycles & 16.502 cycles \\ \hline
+6 &   &   & 20 cycles & 18.604 cycles \\ \hline
+7 &   &   & 21 cycles & 20.627 cycles \\ \hline
 \end{tabular} \\
 \includegraphics{procCallImage}
 That's not much work and the total cost of a procedure call should be around 15
@@ -67,8 +67,15 @@ cycles and that each argument increase the cost by 1 or 2 cycles as excepted.
 We choosed the getpid() system call to test the overhead for a minimal system
 call as it's supposed the least expensive system call.
 System call are excepted to be more expensive than simple procedure call as they
-produce a context switch.
-The result shows that a system call takes around 800 clock cycles to complete.
+produce a context switch. As what we already got for a normal procedure call, the base hardware cost is going to be no more than 20 cycles. However, the software cost is going to be a lot due to the overhead of switching from user mode to kernel mode. We are expecting a cost of more than 300 cycles for the switching here.
+
+\paragraph{Results}
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cost & Software cost & Prediction & Measured \\ \hline
+getpid()  & $\le$ 20cycles  & $\ge$ 300 cycles  & $\ge$ 300 cycles & ~830 cycles \\ \hline
+\end{tabular} \\
+The result shows that a system call takes around 830 clock cycles to complete.
 
 \subsubsection{Task creation time}
 For testing the overhead of creating a new process, we simply called fork(). It turned out that it takes about 750,000 clock cycles for creating it without caching and less than 500,000 with caching.While for the overhead of creating a new thread, we simply called pthread\_creat(). It turned out that it takes about 2000,000 clock cycles for creating it without caching and less than 80,000 with caching.
