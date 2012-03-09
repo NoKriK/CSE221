@@ -88,6 +88,22 @@ A procedure call is composed off :
 \item Restoring the instruction pointer
 \end{enumerate}
 
+
+
+\paragraph{Results}
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+\# of args & Hardware cost & Software cost & Prediction & Measured \\ \hline
+0 &   &   &   & 14.443 cycles \\ \hline
+1 &   &   &   & 14.440 cycles \\ \hline
+2 &   &   &   & 13.782 cycles \\ \hline
+3 &   &   &   & 14.439 cycles \\ \hline
+4 &   &   &   & 18.565 cycles \\ \hline
+5 &   &   &   & 16.502 cycles \\ \hline
+6 &   &   &   & 18.604 cycles \\ \hline
+7 &   &   &   & 20.627 cycles \\ \hline
+\end{tabular} \\
+\includegraphics{procCallImage}
 That's not much work and the total cost of a procedure call should be around 15
 cycles. Each argument may increase the overhead of 1 of 2 cycles.
 The result shows us that the base result for a procedure call is around 15
