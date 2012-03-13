@@ -109,6 +109,9 @@ cycles. Each argument may increase the overhead of 1 of 2 cycles.
 The result shows us that the base result for a procedure call is around 15
 cycles and that each argument increase the cost by 1 or 2 cycles as excepted.
 
+\paragraph{What is the increment overhead of an argument?}
+According to our prediction and the actual measured result from the top. We can say the overhead of an argument is about 1 cycle.
+
 \subsubsection{System call overhead}
 We choosed the getpid() system call to test the overhead for a minimal system
 call as it's supposed the least expensive system call.
@@ -119,7 +122,7 @@ produce a context switch. As what we already got for a normal procedure call, th
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 Operation & Hardware cost & Software cost & Prediction & Measured \\ \hline
-getpid()  & $\le$ 20cycles  & $\ge$ 300 cycles  & $\ge$ 300 cycles & ~830 cycles \\ \hline
+getpid()  & $\le$ 20cycles  & $\ge$ 300 cycles  & $\ge$ 300 cycles & 830 cycles \\ \hline
 \end{tabular} \\
 The result shows that a system call takes around 830 clock cycles to complete.
 
