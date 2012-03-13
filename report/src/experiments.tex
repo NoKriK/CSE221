@@ -5,7 +5,7 @@
 \subsubsection{Measurement overhead}
 
 As we are microbenchmarking, the overhead of the measurement tools that we
-choosed may be influencing our results. Thus we need to know the cost of reading
+choosed may influence our results. Thus we need to know the cost of reading
 the clock and since we are using loops for averaging the results of the tests, we
 also need to know the overhead caused by these loops.
 
@@ -17,7 +17,6 @@ reset.
 In terms of implementation, the instruction is integrated in the code using
 inline assembly and is called using a function which is inlined to avoid the
 overhead of the procedure call and the stack frame creation.
-
 To measure the cost of the reading clock operation, we measured the result between
 two calls and repeated the operation 100,000 times.\\
 
@@ -64,6 +63,11 @@ This is propably partly due to the fact that we didn't account with the pipelini
 capacity of the processor.
 
 \paragraph{Success of Methodology}
+Our result for the reading time are varying but we have an average result. As
+the overhead will be accounted only once for many iterations, this will not
+cause more problem.\\
+
+The result for loop overhead seems accurate.
 
 \subsubsection{Procedure call overhead}
 \paragraph{Methodology}
