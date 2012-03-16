@@ -2,13 +2,13 @@
 
 NAME	=	sysMeasureTool
 
-CC	=	gcc
+CC	=	gcc -m64
 
 SRC	=	sysMeasureTool.c
 
 OBJ     =       $(SRC:.c=.o)
 
-CFLAGS	=	-O1
+CFLAGS	=	-O0 -Wall
 
 $(NAME)	:	$(OBJ)
 		$(CC) $(OBJ) -o $(NAME)
