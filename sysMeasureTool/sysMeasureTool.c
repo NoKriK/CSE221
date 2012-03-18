@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <strings.h>
 
 unsigned int	gl_loopcycle = 10000;
 
@@ -26,8 +27,8 @@ for (measureloopcnt = 0; measureloopcnt < LOOPCYCLE; ++measureloopcnt)\
 	X;					\
 }						\
 c = rdtsc();				\
-printf("Total execution time is : %llu\nEach execution takes about %llu clock cycles (averaging from %d iterations)\n", \
-	c - b, (c - b) / LOOPCYCLE, LOOPCYCLE);\
+printf("Total execution time is : %llu\nEach execution takes about %f clock cycles (averaging from %d iterations)\n", \
+	c - b, (double)(c - b) / (double)LOOPCYCLE, LOOPCYCLE);\
 }
 
 /* Crazy macro to measure inside the loop */
@@ -46,12 +47,12 @@ for (loopcnt = 0; loopcnt < LOOPCYCLE; ++loopcnt)\
 	printf("%llu\n", c - b);		\
 	res += c - b;				\
 }						\
-printf("Total execution time is : %llu\nEach execution takes about %llu clock cycles (averaging from %d iterations)\n", \
-	res, res / LOOPCYCLE, LOOPCYCLE);\
+printf("Total execution time is : %llu\nEach execution takes about %f clock cycles (averaging from %d iterations)\n", \
+	res, (double)res / (double)LOOPCYCLE, LOOPCYCLE);\
 }
 
 /* BEGIN Prototype of the functions to inline */
-static inline unsigned long long	rdtsc(void) __attribute__((always_inline));
+static inline uint64_t	rdtsc(void) __attribute__((always_inline));
 /* END Prototype of the functions to inline */
 
 typedef struct s_measures {
@@ -72,6 +73,7 @@ static uint64_t	inline rdtsc(void)
 
 void* uselessfunc(void *p)
 {
+	return (NULL);
 }
 
 static void 	readClock(void)
@@ -105,10 +107,29 @@ static void	proc0(void) { }
 static void	proc1(int a) { }
 static void	proc2(int a, int b) { }
 static void	proc3(int a, int b, int c) { }
+static void	proc4(int a, int b, int c, int d) { }
+static void	proc5(int a, int b, int c, int d, int f) { }
+static void	proc6(int a, int b, int c, int d, int f, int g) { }
+static void	proc7(int a, int b, int c, int d, int f, int g, int h) { }
 
 static void 	procCall(void)
 {
+	fprintf(stdout, "Procedure call cost with 0 argument :\n");
+	MEASUREOUTLOOP(proc0())
+	fprintf(stdout, "Procedure call cost with 1 argument :\n");
+	MEASUREOUTLOOP(proc1(0))
+	fprintf(stdout, "Procedure call cost with 2 argument :\n");
+	MEASUREOUTLOOP(proc2(0, 42))
+	fprintf(stdout, "Procedure call cost with 3 argument :\n");
 	MEASUREOUTLOOP(proc3(0, 42, 84))
+	fprintf(stdout, "Procedure call cost with 4 argument :\n");
+	MEASUREOUTLOOP(proc4(0, 42, 84, 245))
+	fprintf(stdout, "Procedure call cost with 5 argument :\n");
+	MEASUREOUTLOOP(proc5(0, 42, 84, 245, 23))
+	fprintf(stdout, "Procedure call cost with 6 argument :\n");
+	MEASUREOUTLOOP(proc6(0, 42, 84, 245, 23, 453))
+	fprintf(stdout, "Procedure call cost with 7 argument :\n");
+	MEASUREOUTLOOP(proc7(0, 42, 84, 245, 23, 90, 51))
 }
 
 static void 	sysCall(void)
@@ -139,6 +160,7 @@ static void 	cache(void)
 	/*bcopy(tab, tab1, CACHETABSI * sizeof(*tab));*/
 	)
 	free(tab);
+	res = res;
 }
 
 static const t_measures	gl_funcs[] = {
