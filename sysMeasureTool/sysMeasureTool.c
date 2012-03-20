@@ -7,7 +7,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <pthread.h>
+#include <thread.h>
+#include <wait.h>
 #include <strings.h>
 
 unsigned int	gl_loopcycle = 10000;
@@ -32,12 +33,13 @@ printf("Total execution time is : %llu\nEach execution takes about %f clock cycl
 }
 
 /* Crazy macro to measure inside the loop */
-#define MEASUREINLOOP(X) 	\
+#define MEASUREINLOOP(MAX, X) 	\
 {				\
 unsigned long long b;		\
 unsigned long long c;		\
 unsigned long long res = 0;	\
 unsigned int loopcnt;		\
+unsigned int realloop = LOOPCYCLE;		\
 				\
 for (loopcnt = 0; loopcnt < LOOPCYCLE; ++loopcnt)\
 {						\
@@ -45,10 +47,13 @@ for (loopcnt = 0; loopcnt < LOOPCYCLE; ++loopcnt)\
 	X;					\
 	c = rdtsc();				\
 	printf("%llu\n", c - b);		\
-	res += c - b;				\
+	if (c - b < MAX)			\
+		res += c - b;			\
+	else					\
+		realloop--;			\
 }						\
 printf("Total execution time is : %llu\nEach execution takes about %f clock cycles (averaging from %d iterations)\n", \
-	res, (double)res / (double)LOOPCYCLE, LOOPCYCLE);\
+	res, (double)res / (double)realloop, realloop);\
 }
 
 /* BEGIN Prototype of the functions to inline */
@@ -71,30 +76,32 @@ static uint64_t	inline rdtsc(void)
 }
 
 
+static void 	readClock(void)
+{
+	MEASUREINLOOP(2000, )
+}
+
 void* uselessfunc(void *p)
 {
 	return (NULL);
 }
 
-static void 	readClock(void)
-{
-	MEASUREINLOOP()
-}
-
 static void 	kernelThread(void)
 {
-	MEASUREINLOOP(
-	pthread_create(NULL, NULL, &uselessfunc, NULL)
+	MEASUREINLOOP(300000,
+	thr_create(NULL, 0, uselessfunc, NULL, 0, NULL);
+	thr_join(0, NULL, NULL);
 	);
 }
 
 static void 	processCreation(void)
 {
-	MEASUREINLOOP(
+	MEASUREINLOOP(3000000,
 		if (fork() == 0)
 		{
 			_exit(0);
 		}
+		waitid(P_ALL, 0, NULL, WEXITED);
 	);
 }
 
@@ -137,6 +144,134 @@ static void 	sysCall(void)
 	MEASUREOUTLOOP(getpid())
 }
 
+#define PIPEPROCNB	20
+static void	createPipeTab(int *pipetable, int size)
+{
+	int i;
+
+	for (i = 0; i < size; ++i)
+	{
+		if (pipe(pipetable + (i * 2)))
+		{
+			fprintf(stderr, "Pipe creation failed\n");
+			exit(1);
+		}
+	}
+}
+
+static void	pipeOverhead(void)
+{
+	int	pipetable[PIPEPROCNB * 2];
+	int	i;
+	char	tok = 42;
+
+	createPipeTab(pipetable, PIPEPROCNB);
+	MEASUREOUTLOOP(
+	for (i = 0; i < PIPEPROCNB; ++i) {
+		if (write(pipetable[i * 2], &tok, 1) != 1) {
+			fprintf(stderr, "Pipe write failed\n");
+			exit(1);
+		}
+		if (read(pipetable[i * 2 + 1], &tok, 1) != 1) {
+			fprintf(stderr, "Pipe read failed\n");
+			exit(1);
+		}
+	}
+	)
+}
+
+static void	*readAndWritePipe(void *p)
+{
+	char	tok = 42;
+	int	*pipetable = p;
+
+	while (tok)
+	{
+		if (read(*pipetable, &tok, 1) != 1)
+		{
+			fprintf(stderr, "Pipe read failed\n");
+			exit(1);
+		}
+		if (write(pipetable[1], &tok, 1) != 1)
+		{
+			fprintf(stderr, "Pipe write failed\n");
+			exit(1);
+		}
+	}
+	return (NULL);
+}
+
+static void	measurePipe(int *pipetable)
+{
+	char	tok = 42;
+
+	MEASUREOUTLOOP(
+		if (write(pipetable[0], &tok, 1) != 1)
+		{
+			fprintf(stderr, "Pipe write failed\n");
+			exit(1);
+		}
+		if (read(pipetable[PIPEPROCNB * 2 - 1], &tok, 1) != 1)
+		{
+			fprintf(stderr, "Pipe read failed\n");
+			exit(1);
+		}
+	)
+	/* Kill all processes/thread by sending a magic token */
+	tok = 0;
+	if (write(pipetable[0], &tok, 1) != 1)
+	{
+		fprintf(stderr, "Pipe write failed\n");
+		exit(1);
+	}
+	if (read(pipetable[PIPEPROCNB * 2 - 1], &tok, 1) != 1)
+	{
+		fprintf(stderr, "Pipe read failed\n");
+		exit(1);
+	}
+}
+
+static void		processContextSwitch(void)
+{
+	int		pipetable[PIPEPROCNB * 2];
+	int		i;
+
+	createPipeTab(pipetable, PIPEPROCNB);
+	for (i = 0; i < PIPEPROCNB - 1; ++i)
+	{
+		if (fork() == 0)
+		{
+			readAndWritePipe(pipetable + i * 2 + 1);
+			_exit(0);
+		}
+	}
+	measurePipe(pipetable);
+	/* Avoid zombies */
+	for (i = 0; i < PIPEPROCNB - 1; ++i)
+		waitid(P_ALL, 0, NULL, WEXITED);
+}
+
+static void		threadContextSwitch(void)
+{
+	static int	pipetable[PIPEPROCNB * 2];
+	int	i;
+
+	createPipeTab(pipetable, PIPEPROCNB);
+	for (i = 0; i < PIPEPROCNB - 1; ++i)
+	{
+		if (thr_create(NULL, 0, readAndWritePipe, pipetable + i * 2 + 1, 0, NULL))
+		{
+			fprintf(stderr, "Thread creation failed\n");
+			exit(1);
+		}
+	}
+	measurePipe(pipetable);
+	/* Avoid zombies */
+	for (i = 0; i < PIPEPROCNB - 1; ++i)
+		thr_join(0, NULL, NULL);
+}
+
+
 #define CACHETABSI 1024 * 1024 * 32
 static void 	cache(void)
 {
@@ -152,7 +287,7 @@ static void 	cache(void)
 		exit(1);
 	}
 	
-	MEASUREINLOOP(
+	MEASUREINLOOP(100000000,
 	for (i = 0; i < CACHETABSI; ++i)
 	{
 		res += tab[i];
@@ -171,6 +306,9 @@ static const t_measures	gl_funcs[] = {
 	{ "procCall", procCall },
 	{ "sysCall", sysCall },
 	{ "cache", cache },
+	{ "pipeOverhead", pipeOverhead },
+	{ "processContextSwitch", processContextSwitch },
+	{ "threadContextSwitch", threadContextSwitch },
 };
 
 static void 	displayUsage(void)
