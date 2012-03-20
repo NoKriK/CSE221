@@ -16,6 +16,8 @@ ${FNAME}:	premake
 
 all: ${FNAME}
 
+open	:	${FNAME}
+		open ${FNAME}
 
 premake:
 		cd src/ && mkdir -p ${TARGETDIR}
