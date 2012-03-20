@@ -79,7 +79,7 @@ Without any overload and in a perfect situation, the performance of sequential
 write would be two times the bandwith of the worst disk.
 
 \subsubsection{Performance penality}
-TBD.
+%FIXME
 
 \subsection{Network}
 The network card is integrated to the moterboard. It's an \emph{Intel® 82579LM Gigabit
@@ -99,3 +99,13 @@ Content of the /etc/release file :
                             Assembled 18 October 2011
 \end{verbatim}
 
+\subsection{Hypervisor}
+The hypervisor is Xen.
+The virtual machine is running in HVM mode and make use of the Intel VT-d and
+Intel EPT instructions sets.
+Basic instructions doesn't suffer from any overhead as their instructions are
+executed natively.
+TLB miss are most costly as the processor need to walk through two page tables
+to translate the Guest Virtual address to Host Virtual Address and then the Host
+Virtual Address to Host Physical Address.
+%FIXME
