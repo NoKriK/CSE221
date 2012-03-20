@@ -1,0 +1,168 @@
+\subsection{CPU, Scheduling, and OS Services}
+
+\subsubsection{Measurement overhead}
+
+As we are microbenchmarking, the overhead of the measurement tools that we
+choosed may influence our results. Thus we need to know the cost of reading
+the clock and since we are using loops for averaging the results of the tests, we
+also need to know the overhead caused by these loops.
+
+\paragraph{Methodology}
+We are using the \emph{rdtsc} assembly instruction to do the measurement.
+The \emph{rdtsc} instruction allows us to read the \emph{Time Stamp Counter}
+which is a 64 bit counter containing the number of cycles elapsed since his
+reset.
+In terms of implementation, the instruction is integrated in the code using
+inline assembly and is called using a function which is inlined to avoid the
+overhead of the procedure call and the stack frame creation.
+To measure the cost of the reading clock operation, we measured the result between
+two calls and repeated the operation 100,000 times.\\
+
+The loop overhead has been measured with 100,000 iterations.
+
+\paragraph{Predictions}
+The operations between the two rdtsc call are basicly a copy from the result
+which are stored in the eax and edx register to the main memory, a binary shift
+and a binary OR on the two variables.
+As the cache may be hited, it's basicly two cache write, around 10 cycles, and
+the cost of the second rdtsc call.\\
+
+As all optimization are turned off, the cost of a loop iteration is basicly a
+load from memory, an incrementation, a store to memory, a comparaison and a
+jump.
+The cache will probably be hited, thus the cost of memory operations will be low.
+The total cost may be around 15 cycles if we count 10 cycles for the memory
+latency and 1 cycle for operation such as incremention, comparaison and
+jump.\\
+
+There is no software overhead in any of these operations.
+
+\paragraph{Results}
+
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cost & Software cost & Prediction & Measured \\
+\hline
+Reading the clock & 25 cycles & 0 cycles & 25 cycles & 58.555 cycles \\
+\hline
+Loop & 15 cycles & 0 cycles & 15 cycles & 12.487 cycles \\
+\hline
+\end{tabular}
+\paragraph{Accuracy of Estimates}
+Our estimates are too low for the reading time, due to the cost of the memory write operation which is
+higher than excepted.
+It seems that we fill the cache latency due to the dependency of the data
+avoiding the effective use of the pipelining.
+This hypothesis on the memory write operation cost is due to the fact that on long run,
+the result is lowered to aproximatly 30 cycles after 50,000 iterations.
+We choosed to report the average of a run which did not show this reduction in
+the cost because it seems more accurate (i.e. we will call rdtsc once for each
+loop).\\
+
+Our estimates are in the good range for the loop.
+
+\paragraph{Success of Methodology}
+Our result for the reading time are varying but we have an average result. As
+the overhead will be accounted only once for many iterations, this will not
+cause more problem.\\
+
+The result for the loop overhead seems accurate.
+
+\subsubsection{Procedure call overhead}
+\paragraph{Methodology}
+We defined seven functions with different number of arguments to test the
+cost of a procedure call and the overhead of an argument.
+Each procedure call is made 100,000 time in a loop and the total is measured.
+The cost per loop cycle is then calculated and the overhead of the loop is
+removed.
+
+\paragraph{Predictions}
+On x86-64 a procedure call is composed off :
+\begin{enumerate}
+\item Moving the arguments into specific registers (for the 7 first arguments)
+\item Calling the procedure, that is jumping to the beginning of the procedure
+\item Creating a new stack frame, that is saving the previous stack pointer and
+moving the stack pointer into the begin stack pointer
+\item Destroying the stack frame
+\item Restoring the instruction pointer
+\end{enumerate}
+
+The latency of the memory operations may be hidden due to pipelining.
+The procedure call should normally be predicted by the branch prediction part of
+the processor avoiding stall of the processor.
+The architecture of the Intel Sandy Bridge is very complex, making prediction is
+really difficult.
+We can guess that the procedure call will take about 10 cycle and that each
+argument will cause a cost of one cycle due to the new register access.
+
+\paragraph{Results}
+\begin{center}
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+\# of args & Hardware cost & Software cost & Prediction & Measured \\ \hline
+0 & 10  & 0  & 10  & 14.442 cycles \\ \hline
+1 & 11  & 0  & 11  & 17.704 cycles \\ \hline
+2 & 12  & 0  & 12  & 14.728 cycles \\ \hline
+3 & 13  & 0  & 13  & 14.937 cycles \\ \hline
+4 & 14  & 0  & 14  & 16.986 cycles \\ \hline
+5 & 15  & 0  & 15  & 18.620 cycles \\ \hline
+6 & 16  & 0  & 16  & 19.533 cycles \\ \hline
+7 & 17  & 0  & 17  & 20.844 cycles \\ \hline
+\end{tabular} \\
+\includegraphics[scale=0.5]{procCallImage}
+\end{center}
+
+
+\paragraph{Accuracy of Estimates}
+The results are low as predicted.
+
+\paragraph{Success of Methodology}
+We are not able to explain the incoherent result for the procedure call with one
+argument.
+This difference for the call is not excepted but we are able to reproduce this
+behavior.
+
+The results show us that the base result for a procedure call is around 14
+cycles and that each argument increase the cost by 1 cycle as excepted.
+
+\subsubsection{System call overhead}
+\paragraph{Methodology}
+We choosed the getpid() system call to test the overhead for a minimal system
+call as it's supposed to be the least expensive system call.
+
+\paragraph{Predictions}
+System call are excepted to be more expensive than simple procedure call as they
+produce a context switch.
+The state of the process need to be saved and a kernel thread must be launched.
+The way back need also to be done.
+
+\paragraph{Results}
+
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cose & Software cost & Prediction & Measured \\
+\hline
+\end{tabular}
+\paragraph{Accuracy of Estimates}
+\paragraph{Success of Methodology}
+
+\subsubsection{Task creation time}
+\paragraph{Methodology}
+\paragraph{Predictions}
+\paragraph{Results}
+
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cose & Software cost & Prediction & Measured \\
+\hline
+\end{tabular}
+\paragraph{Accuracy of Estimates}
+\paragraph{Success of Methodology}
+For testing the overhead of creating a new process, we simply called fork(). It turned out that it takes about 750,000 clock cycles for creating it without caching and less than 500,000 with caching.While for the overhead of creating a new thread, we simply called pthread\_creat(). It turned out that it takes about 2000,000 clock cycles for creating it without caching and less than 80,000 with caching.
+The fact thread creation without caching is taking way longer time than the one for process creation doesn't really make sense to us right now, and we will look into that later as the project goes. But considering that thread creation does't envolve memory alloction, the average case for thread creation is generally faster then the one for process creation.
+
+
+\subsubsection{Context switch time}
+We measured the context switching overhead for both processes and threads. The way we define context switching is by creating a child process/thread and make the child do some task and return back to the parent. The overhead of such context switching is going to be the time start from the creation of the child to the time execution gets back to the parent process/thread excluding the time for child to execute. We only tested the context switching within 2 different processes.
+//***TODO actual result
+
