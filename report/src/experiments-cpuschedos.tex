@@ -129,21 +129,38 @@ cycles and that each argument increase the cost by 1 cycle as excepted.
 \paragraph{Methodology}
 We choosed the getpid() system call to test the overhead for a minimal system
 call as it's supposed to be the least expensive system call.
+We then ran it 10,000 times to get an averaged result.
 
 \paragraph{Predictions}
 System call are excepted to be more expensive than simple procedure call as they
 produce a context switch.
 The state of the process need to be saved and a kernel thread must be launched.
 The way back need also to be done.
+We except something like 400 cycles for each context switch, so a total of about 800 cycles.
 
 \paragraph{Results}
 
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cose & Software cost & Prediction & Measured \\
+Operation & Hardware cost & Software cost & Prediction & Measured \\
+\hline
+Context switch (1st run) & 200 cycles & 600 cycles & 800 cycles & 5000 cycles\\
+\hline
+Context switch (average) & 200 cycles & 600 cycles & 800 cycles & 750 cycles\\
 \hline
 \end{tabular}
+
+The first call is always slow, probably due to the need to read kernel code and
+kernel memory which are not in cache.
+The following calls are going faster probably due to branch prediction and
+cache.
+We can see that system calls are much expensiver than procedure calls as
+excepted.
+
 \paragraph{Accuracy of Estimates}
+We didn't predicted that the first run would be that slow.
+The comming 
+
 \paragraph{Success of Methodology}
 
 \subsubsection{Task creation time}
@@ -163,6 +180,17 @@ The fact thread creation without caching is taking way longer time than the one 
 
 
 \subsubsection{Context switch time}
+\paragraph{Methodology}
+\paragraph{Predictions}
+\paragraph{Results}
+
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cose & Software cost & Prediction & Measured \\
+\hline
+\end{tabular}
+\paragraph{Accuracy of Estimates}
+\paragraph{Success of Methodology}
 We measured the context switching overhead for both processes and threads. The way we define context switching is by creating a child process/thread and make the child do some task and return back to the parent. The overhead of such context switching is going to be the time start from the creation of the child to the time execution gets back to the parent process/thread excluding the time for child to execute. We only tested the context switching within 2 different processes.
 //***TODO actual result
 
