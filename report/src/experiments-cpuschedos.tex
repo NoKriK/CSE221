@@ -40,18 +40,14 @@ There is no software overhead in any of these operations.
 \paragraph{Results}
 
 \begin{center}
-\begin{tabular}{| l | l | l | l | l |}
-\hline
-Operation & Hardware cost & Software cost & Prediction & Measured \\
-\hline
-Reading the clock & 25 cycles & 0 cycles & 25 cycles & 58.555 cycles \\
-\hline
-Loop & 15 cycles & 0 cycles & 15 cycles & 12.487 cycles \\
-\hline
+\begin{tabular}{| l | l | l | l | l |} \hline
+Operation 			& Hardware cost 	& Software cost 	& Prediction	& Measured \\ \hline
+Reading the clock 	& 25 cycles		& 0 cycles			& 25 cycles 	& 58.555 cycles \\ \hline
+Loop 				& 15 cycles 		& 0 cycles 		& 15 cycles 	& 12.487 cycles \\ \hline
 \end{tabular}
 \end{center}
-\paragraph{Accuracy of Estimates}
-Our estimates are too low for the reading time, due to the cost of the memory write operation which is
+
+Compared to the actual result, our estimates are too low for the reading time, due to the cost of the memory write operation which is
 higher than excepted.
 It seems that we fill the cache latency due to the dependency of the data
 avoiding the effective use of the pipelining.
@@ -102,30 +98,29 @@ argument will cause a cost of one cycle due to the new register access.
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 \# of args & Hardware cost & Software cost & Prediction & Measured \\ \hline
-0 & 10  & 0  & 10  & 14.471 cycles \\ \hline
-1 & 11  & 0  & 11  & 14.471 cycles \\ \hline
-2 & 12  & 0  & 12  & 14.455 cycles \\ \hline
-3 & 13  & 0  & 13  & 14.462 cycles \\ \hline
-4 & 14  & 0  & 14  & 14.461 cycles \\ \hline
-5 & 15  & 0  & 15  & 14.461 cycles \\ \hline
-6 & 16  & 0  & 16  & 14.456 cycles \\ \hline
-7 & 17  & 0  & 17  & 16.518 cycles \\ \hline
+0 & 2  & 8   & 10  & 14.471 cycles \\ \hline
+1 & 2  & 9   & 11  & 14.471 cycles \\ \hline
+2 & 2  & 10  & 12  & 14.455 cycles \\ \hline
+3 & 2  & 11  & 13  & 14.462 cycles \\ \hline
+4 & 2  & 12  & 14  & 14.461 cycles \\ \hline
+5 & 2  & 13  & 15  & 14.461 cycles \\ \hline
+6 & 2  & 14  & 16  & 14.456 cycles \\ \hline
+7 & 2  & 15  & 17  & 16.518 cycles \\ \hline
 \end{tabular} \\
 \includegraphics[scale=0.8]{procCallImage}
 \end{center}
 
 
 \paragraph{Accuracy of Estimates}
-The results are low as predicted.
+The results are low as predicted. Apparently the cost of accessing one more argument is too low to be detected. Only when the function take 7 aguments, which cannot all fit into the registers. The 7th argument is put into the stack and the cost for doing that turns out to be about 2 cycles.
 
 \paragraph{Success of Methodology}
-We are not able to explain the incoherent result for the procedure call with one
-argument.
-This difference for the call is not excepted but we are able to reproduce this
-behavior.
 
-The results show us that the base result for a procedure call is around 14
-cycles and that each argument increase the cost by 1 cycle as excepted.
+
+
+
+
+
 
 \subsubsection{System call overhead}
 \paragraph{Methodology}
