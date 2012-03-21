@@ -39,6 +39,7 @@ There is no software overhead in any of these operations.
 
 \paragraph{Results}
 
+\begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 Operation & Hardware cost & Software cost & Prediction & Measured \\
@@ -48,6 +49,7 @@ Reading the clock & 25 cycles & 0 cycles & 25 cycles & 58.555 cycles \\
 Loop & 15 cycles & 0 cycles & 15 cycles & 12.487 cycles \\
 \hline
 \end{tabular}
+\end{center}
 \paragraph{Accuracy of Estimates}
 Our estimates are too low for the reading time, due to the cost of the memory write operation which is
 higher than excepted.
@@ -100,16 +102,16 @@ argument will cause a cost of one cycle due to the new register access.
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 \# of args & Hardware cost & Software cost & Prediction & Measured \\ \hline
-0 & 10  & 0  & 10  & 14.442 cycles \\ \hline
-1 & 11  & 0  & 11  & 17.704 cycles \\ \hline
-2 & 12  & 0  & 12  & 14.728 cycles \\ \hline
-3 & 13  & 0  & 13  & 14.937 cycles \\ \hline
-4 & 14  & 0  & 14  & 16.986 cycles \\ \hline
-5 & 15  & 0  & 15  & 18.620 cycles \\ \hline
-6 & 16  & 0  & 16  & 19.533 cycles \\ \hline
-7 & 17  & 0  & 17  & 20.844 cycles \\ \hline
+0 & 10  & 0  & 10  & 14.471 cycles \\ \hline
+1 & 11  & 0  & 11  & 14.471 cycles \\ \hline
+2 & 12  & 0  & 12  & 14.455 cycles \\ \hline
+3 & 13  & 0  & 13  & 14.462 cycles \\ \hline
+4 & 14  & 0  & 14  & 14.461 cycles \\ \hline
+5 & 15  & 0  & 15  & 14.461 cycles \\ \hline
+6 & 16  & 0  & 16  & 14.456 cycles \\ \hline
+7 & 17  & 0  & 17  & 16.518 cycles \\ \hline
 \end{tabular} \\
-\includegraphics[scale=0.5]{procCallImage}
+\includegraphics[scale=0.8]{procCallImage}
 \end{center}
 
 
@@ -140,6 +142,7 @@ We except something like 400 cycles for each context switch, so a total of about
 
 \paragraph{Results}
 
+\begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 Operation & Hardware cost & Software cost & Prediction & Measured \\
@@ -149,6 +152,7 @@ Context switch (1st run) & 200 cycles & 600 cycles & 800 cycles & 5000 cycles\\
 Context switch (average) & 200 cycles & 600 cycles & 800 cycles & 750 cycles\\
 \hline
 \end{tabular}
+\end{center}
 
 The first call is always slow, probably due to the need to read kernel code and
 kernel memory which are not in cache.
@@ -166,15 +170,36 @@ The following
 
 \subsubsection{Task creation time}
 \paragraph{Methodology}
-\paragraph{Predictions}
-\paragraph{Results}
+We measured the time to create process and thread seperately. After that, we compared them to each other to verify our measurement. When a new process is created, the page tables and stack frame are copied. While for creating a kernel thread, less information are required to get copied because of the fact that a lot of the resource in thread are shared with the main thread.
+We used the system call fork() for creating a new process and record the number of cycles from before the fork() is called to the point waitid() get back from the new process. And for the newly created process, we called \_exit() to immediated exit after creation.
+Similarly, we used the solaris implementation, which is thr\_create() for cloning thread. At first we used pthread\_create() fuction for thread creation operation. We replaced it with thr\_create() later because it is not meant for Solaris system, which is not as accurate when we are doing the measurement of the whole Solaris OS. Right after the creation of the thread, we used thr\_join() to wait for the termination of itself.
+At the same time, we measured the time for the program to create process and threads for the first time only as well, for loading the functions we used in this measurement into the cache.
+The creation overhead has been measured with 100,000 iterations.
 
-\begin{tabular}{| l | l | l | l | l |}
+
+\paragraph{Predictions}
+
+As mentioned earlier, the thread has less data to copy than process do. Meanwhile, the process creation is using system call instead of function call, which envolves two context switching time. We predict that process creation is about 10000 cycles taking longer than thread creation 8000 cycles.
+
+
+
+
+
+
+\paragraph{Results}
+\begin{center}
+\begin{tabular}{| l | l | l | l | l | l |}
 \hline
-Operation & Hardware cose & Software cost & Prediction & Measured \\
+Operation & H/W cost & S/W cost & Prediction & Measured average & Measured first creation \\
 \hline
+fork() process 		& 20  & 10000  	& 10000 & 1198519.65 cycles & 2257852 cycles\\ \hline
+thr\_create() thread 	& 20  & 8000	& 8000  &  157433.27 cycles & 2273593 cycles \\ \hline
 \end{tabular}
+\end{center}
+
+
 \paragraph{Accuracy of Estimates}
+The measurement result mostly fits our prediction besides the fact that the number of cycles are way bigger than what we expected.
 \paragraph{Success of Methodology}
 For testing the overhead of creating a new process, we simply called fork(). It turned out that it takes about 750,000 clock cycles for creating it without caching and less than 500,000 with caching.While for the overhead of creating a new thread, we simply called pthread\_creat(). It turned out that it takes about 2000,000 clock cycles for creating it without caching and less than 80,000 with caching.
 The fact thread creation without caching is taking way longer time than the one for process creation doesn't really make sense to us right now, and we will look into that later as the project goes. But considering that thread creation does't envolve memory alloction, the average case for thread creation is generally faster then the one for process creation.
@@ -185,11 +210,14 @@ The fact thread creation without caching is taking way longer time than the one 
 \paragraph{Predictions}
 \paragraph{Results}
 
+\begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
+\end{center}
+
 \paragraph{Accuracy of Estimates}
 \paragraph{Success of Methodology}
 We measured the context switching overhead for both processes and threads. The way we define context switching is by creating a child process/thread and make the child do some task and return back to the parent. The overhead of such context switching is going to be the time start from the creation of the child to the time execution gets back to the parent process/thread excluding the time for child to execute. We only tested the context switching within 2 different processes.

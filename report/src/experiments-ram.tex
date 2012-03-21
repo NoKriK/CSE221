@@ -34,6 +34,41 @@ We expected to see the RAM access time increases as it goes from L1, L2 to main 
 1. iteration of the first 32KB data or less (fit into L1 cache)
 2. iteration of the first 288KB data or less (fit into L1+L2 cache)
 3. iteration of all the whole array(doesn’t fit into caches).
+\paragraph{Predictions}
+\paragraph{Results}
+We are going to present the result table for stride 11 and the plotted graph for different strides from 1 to 15.
+\begin{center}
+\begin{tabular}{| r | l | l | l | r |}
+\hline
+Size of array 	& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hline
+512B 			&				&				&			&3.895 cycles	\\ \hline
+1KB 			&				&				&			&3.886 cycles		\\ \hline
+2KB 			&				&				&			&3.885 cycles		\\ \hline
+4KB 			&				&				&			&3.886 cycles		\\ \hline
+8KB 			&				&				&			&3.886 cycles		\\ \hline
+16KB 			&				&				&			&3.888 cycles		\\ \hline
+32KB 			&				&				&			&3.891 cycles		\\ \hline
+64KB 			&				&				&			&5.949 cycles		\\ \hline
+128KB 		&				&				&			&5.945 cycles		\\ \hline
+256KB 		&				&				&			&6.209 cycles		\\ \hline
+512KB 		&				&				&			&10.314 cycles		\\ \hline
+1MB 			&				&				&			&10.399 cycles		\\ \hline
+2MB 			&				&				&			&10.757 cycles		\\ \hline
+4MB 			&				&				&			&15.585 cycles		\\ \hline
+8MB 			&				&				&			&30.265 cycles		\\ \hline
+16MB 			&				&				&			&37.458 cycles		\\ \hline
+32MB 			&				&				&			&37.686 cycles		\\ \hline
+64MB 			&				&				&			&37.092 cycles		\\ \hline
+128MB 		&				&				&			&37.619 cycles		\\ \hline
+
+\hline
+\end{tabular}
+\includegraphics[scale=0.8]{memoryLatencyImage}
+\end{center}
+
+\paragraph{Accuracy of Estimates}
+\paragraph{Success of Methodology}
+
 The result we got from our measurement shown that //TODO actual result
 
 
@@ -83,6 +118,11 @@ Operation & Hardware cost & Software cost & Prediction & Measured \\
 
 \subsubsection{Page fault service time}
 \paragraph{Methodology}
+In order to manually create a page fault situation, we used two really large array which are the same size as main memory.
+Then we filled the first array to put it into main memory first and so that the pages are allocated.
+Afterwards, we filled the second array so that the first array will be totally paged out to HDD.
+The page fault service time is going to be the time it takes for us to get the value of element from first array at this point.
+This forces the page to swap gives us the right page fault service time. 
 \paragraph{Predictions}
 \paragraph{Results}
 
@@ -96,4 +136,3 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \paragraph{Accuracy of Estimates}
 \paragraph{Success of Methodology}
 
-In order to manually create a page fault situation, we used two really large array which as the same size as main memory. Then we are going to iterate through the first array, basically means put it into main memory first. Afterwards, we iterate through the second array so that the first array will be totally paged out to hardddisk after that. The page fault service time is going to be the time it takes for us to get the value of element from first array at this point.This forces the page to swap gives us the right page fault service time. 
