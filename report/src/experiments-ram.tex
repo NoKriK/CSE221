@@ -74,8 +74,6 @@ The result we got from our measurement shown that //TODO actual result
 
 
 
-
-
 \subsubsection{RAM bandwidth}
 \paragraph{Methodology}
 We allocated an array of 128MB so that it doesn't fit into any cache (the L3 cache is 6MB).
@@ -115,17 +113,18 @@ Operation & Hardware cost & Software cost & Prediction & Measured \\
 
 
 
-
 \subsubsection{Page fault service time}
 \paragraph{Methodology}
 In order to manually create a page fault situation, we used two really large array which are the same size as main memory.
 Then we filled the first array to put it into main memory first and so that the pages are allocated.
-Afterwards, we filled the second array so that the first array will be totally paged out to HDD.
-The page fault service time is going to be the time it takes for us to get the value of element from first array at this point.
-This forces the page to swap gives us the right page fault service time. 
-\paragraph{Predictions}
-\paragraph{Results}
+Afterwards, we filled the second array so that the first array will be totally paged out to the swap space.
+The page fault service time is going to be the time it takes to get the value of an element from the first array.
 
+\paragraph{Predictions}
+
+
+\paragraph{Results}
+\begin{figure}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -133,6 +132,10 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
-\paragraph{Accuracy of Estimates}
+\caption{Page fault service time}
+\label{fig:page-fault}
+\end{figure}
+
+As seen in table \ref{fig:page-fault} blalba
 \paragraph{Success of Methodology}
 
