@@ -8,9 +8,24 @@ We will discuss different performance aspects of the system including CPU, RAM, 
 network, file system and benchmark them.
 By doing this project, we are expecting to get an intuite of the performance for
 vary basic operations as well as the detailed implementation idea for operating systems.
+
+\subsection{Language and compiler}
 Our measurement will be done with a tool written in C.
 We are using \emph{the GNU Compiler Collection} (gcc) version 4.5.2 as
 compiler.
-The only option which is used at compilation time is '-O0' which stands for "do
-not optimize"
-At this time we spent 20 hours working on the project each.
+The options which are used at compilation time are 
+\begin{description}
+\item[-O] which turns on the first level of optimization.
+This necessary because otherwise the compiler always write into the stack the modified values.
+For example, in a loop, on each iteration the value is written back to the stack.
+The cache is hited but it still creates a big overhead.
+\item[-m64] compile the programm in x86\_64 mode.
+\item[-fno-omit-frame-pointer] is used to ensure that the stack frame are really created.
+\item[-funroll-loops] which was turned in to avoid the overhead of the loops, particularly in the memory benchmarks.
+\end{description}
+
+At the beginning we started by desactivating all the optimizations.
+When we looked at the assembly code, the code was really underoptimized so we decided to turn on some optimizations.
+We use some tricks to avoid certain optimizations when we don't want them.
+
+At this time we spent 60 hours working on the project each.
