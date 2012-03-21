@@ -2,7 +2,34 @@
 
 \subsubsection{RAM access time}
 \paragraph{Methodology}
-We measured the back-to-back-load RAM access latency, because it is well accepted by most software developers and system researchers. The way we measure the RAM access latency is making the program iterating a array of specific size for bunch of times and averaging it to eliminate the noise. The size of the array we used are larger than 256KB, which is larger than the total amount of L1 cache and L2 cache. We did multiple number of tests on iterating the first k element of the array, so that certain part of the data will be cached into L1 cache or L2 cache.
+We measured the back-to-back-load RAM access latency, because it is well accepted by most software developers and system researchers.
+We use the method described in the paper \emph{lmbench: Portable Tools for Performance Analysis} to measure the memory and cache latency.
+We create arrays of different sizes, we create a list of pointers to walk the list and then we walk the list like this :
+\begin{verbatim}
+p = *p;
+\end{verbatim}
+
+Then we created the list with different strides and did the same measurement.
+For each couple of stride/array sizes we do 1,000,000 iterates through the list.
+The value of the pointer p is then printed to avoid that the compiler optimize the loop and remove the instruction.
+
+\paragraph{Predictions}
+According to the \emph{Intel® 64 and IA-32 Architectures Optimization Reference Manual}
+\ref{intel-archi-opti-intel64} base case latencies are :
+\begin{description}
+\item[L1 cache] 4 cycles
+\item[L2 cache] 12 cycles
+\item[L3 cache] 26-31 cycles
+\end{description}
+According to the ram specification the latency is about 15ns.
+It's about 45 cpu cycles as the CPU is running at 3.3Ghz.
+
+\paragraph{Results}
+
+\begin{center}
+\end{center}
+\paragraph{Accuracy of Estimates}
+\paragraph{Success of Methodology}
 We expected to see the RAM access time increases as it goes from L1, L2 to main memory. Basically saying there would be a significant difference among the following three cases: 
 1. iteration of the first 32KB data or less (fit into L1 cache)
 2. iteration of the first 288KB data or less (fit into L1+L2 cache)
@@ -51,19 +78,37 @@ The result we got from our measurement shown that //TODO actual result
 
 \subsubsection{RAM bandwidth}
 \paragraph{Methodology}
+We allocated an array of 128MB so that it doesn't fit into any cache (the L3 cache is 6MB).
+To make the measurement, we walked through the array by incrementing a pointer to avoid summing an index and a base pointer on each iteration.
+The array is filled once before the tests to ensure that the underlying pages are really allocated and to avoid TLB misses.
 
-We used an array with size 16MB, so that it is larger than the cache size (6MB including fancy L3 cache). At the same time, it still fits into the main memory. We iterated through the list and do both read and write. We did read by just doing a[i]+0 and write by doing a[i] = a[i]+1. We would expect read is faster than write operation, because the system need to make sure the data is actually write to the memory after performed the write operation. While there is no such issue for read operation.
+
+For the read bandwidth an integer value was read and added to an integer stored in a register.
+The resulting value is printed after the measurement to avoid a compiler optimization.
+For the write bandwidth, we filled the array of an arbitrary integer value.
+
+The optimizations are turned on to reduce the number of operations not related to the memory read.
+The only other operation are an incrementation of the pointer, a comparaison and a conditional jump.
+All these operations are made on values stored in registers.
+The compiler options -funroll-loops also helps avoid the overhead of the loop.
+
+The measurement unit is in cycle for 128MB and is then translated to MB/s by calculating it with the CPU clock rate.
+The result is averaged on 1000 iterations.
+
 \paragraph{Predictions}
+According to the specification of the ram, the peak transfer rate is 10666 MB/s.
+We are awaiting result wich should be near this value but doesn't reach this value as this is a theoritical value.
+We also have a small overhead in our measurement due to the loop operations.
+
 \paragraph{Results}
 
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cose & Software cost & Prediction & Measured \\
+Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
-
 \paragraph{Accuracy of Estimates}
 \paragraph{Success of Methodology}
 
@@ -73,7 +118,11 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 
 \subsubsection{Page fault service time}
 \paragraph{Methodology}
-In order to manually create a page fault situation, we used two really large array which as the same size as main memory. Then we are going to iterate through the first array, basically means put it into main memory first. Afterwards, we iterate through the second array so that the first array will be totally paged out to hardddisk after that. The page fault service time is going to be the time it takes for us to get the value of element from first array at this point.This forces the page to swap gives us the right page fault service time. 
+In order to manually create a page fault situation, we used two really large array which are the same size as main memory.
+Then we filled the first array to put it into main memory first and so that the pages are allocated.
+Afterwards, we filled the second array so that the first array will be totally paged out to HDD.
+The page fault service time is going to be the time it takes for us to get the value of element from first array at this point.
+This forces the page to swap gives us the right page fault service time. 
 \paragraph{Predictions}
 \paragraph{Results}
 
@@ -84,6 +133,6 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
-
 \paragraph{Accuracy of Estimates}
 \paragraph{Success of Methodology}
+
