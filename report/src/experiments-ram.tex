@@ -9,13 +9,34 @@ We expected to see the RAM access time increases as it goes from L1, L2 to main 
 3. iteration of all the whole array(doesn’t fit into caches).
 \paragraph{Predictions}
 \paragraph{Results}
-
+We are going to present the result table for stride 11 and the plotted graph for different strides from 1 to 15.
 \begin{center}
-\begin{tabular}{| l | l | l | l | l |}
+\begin{tabular}{| r | l | l | l | r |}
 \hline
-Operation & Hardware cose & Software cost & Prediction & Measured \\
+Size of array 	& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hline
+512B 			&				&				&			&3.895 cycles	\\ \hline
+1KB 			&				&				&			&3.886 cycles		\\ \hline
+2KB 			&				&				&			&3.885 cycles		\\ \hline
+4KB 			&				&				&			&3.886 cycles		\\ \hline
+8KB 			&				&				&			&3.886 cycles		\\ \hline
+16KB 			&				&				&			&3.888 cycles		\\ \hline
+32KB 			&				&				&			&3.891 cycles		\\ \hline
+64KB 			&				&				&			&5.949 cycles		\\ \hline
+128KB 		&				&				&			&5.945 cycles		\\ \hline
+256KB 		&				&				&			&6.209 cycles		\\ \hline
+512KB 		&				&				&			&10.314 cycles		\\ \hline
+1MB 			&				&				&			&10.399 cycles		\\ \hline
+2MB 			&				&				&			&10.757 cycles		\\ \hline
+4MB 			&				&				&			&15.585 cycles		\\ \hline
+8MB 			&				&				&			&30.265 cycles		\\ \hline
+16MB 			&				&				&			&37.458 cycles		\\ \hline
+32MB 			&				&				&			&37.686 cycles		\\ \hline
+64MB 			&				&				&			&37.092 cycles		\\ \hline
+128MB 		&				&				&			&37.619 cycles		\\ \hline
+
 \hline
 \end{tabular}
+\includegraphics[scale=0.8]{memoryLatencyImage}
 \end{center}
 
 \paragraph{Accuracy of Estimates}
