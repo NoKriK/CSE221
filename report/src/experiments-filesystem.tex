@@ -9,7 +9,7 @@ Note that this may be very sensitive to other load on the machine. Report result
 \paragraph{Methodology}
 \paragraph{Predictions}
 \paragraph{Results}
-
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -17,8 +17,11 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
+\caption{Size of file cache\label{tab:file-cache}}
+\end{table}
 
-\paragraph{Accuracy of Estimates}
+According to the result shown in \ref{tab:file-cache}, we
+
 \paragraph{Success of Methodology}
 
 
@@ -33,7 +36,7 @@ Report for both sequential and random access as a function of file size. Discuss
 
 \paragraph{Predictions}
 \paragraph{Results}
-
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -41,8 +44,12 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
+\caption{File read time\label{tab:file-read-time}}
+\end{table}
 
-\paragraph{Accuracy of Estimates}
+According to the result shown in \ref{tab:file-read-time}, we
+
+
 \paragraph{Success of Methodology}
 
 
@@ -59,6 +66,7 @@ Repeat the previous experiment for a remote file system. What is the "network pe
 \paragraph{Predictions}
 \paragraph{Results}
 
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -66,8 +74,10 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
+\caption{Remote file read time\label{tab:remote-file-access}}
+\end{table}
 
-\paragraph{Accuracy of Estimates}
+According to the result shown in \ref{tab:remote-file-access}, we
 \paragraph{Success of Methodology}
 
 
@@ -82,7 +92,7 @@ Report the average time to read one file system block of data as a function of t
 
 \paragraph{Predictions}
 \paragraph{Results}
-
+\begin{table}
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -90,6 +100,9 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
+\caption{Contention\label{tab:contention}}
+\end{table}
 
-\paragraph{Accuracy of Estimates}
+According to the result shown in \ref{tab:contention}, we
+
 \paragraph{Success of Methodology}

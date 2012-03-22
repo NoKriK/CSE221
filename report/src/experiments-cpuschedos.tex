@@ -38,7 +38,7 @@ jump.\\
 There is no software overhead in any of these operations.
 
 \paragraph{Results}
-
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |} \hline
 Operation 			& Hardware cost 	& Software cost 	& Prediction	& Measured \\ \hline
@@ -46,11 +46,12 @@ Reading the clock 	& 25 cycles		& 0 cycles			& 25 cycles 	& 58.555 cycles \\ \hl
 Loop 				& 15 cycles 		& 0 cycles 		& 15 cycles 	& 12.487 cycles \\ \hline
 \end{tabular}
 \end{center}
+\caption{Measurement overhead\label{tab:measurement-overhead}}
 
-Compared to the actual result, our estimates are too low for the reading time, due to the cost of the memory write operation which is
-higher than excepted.
-It seems that we fill the cache latency due to the dependency of the data
-avoiding the effective use of the pipelining.
+\end{table}
+
+As seen in table \ref{tab:measurement-overhead}, our estimates are too low for the reading time compared to the actual result. The reason of that is the cost of the memory write operation is
+higher than excepted. It seems that we fill the cache latency due to the dependency of the data avoiding the effective use of the pipelining.
 This hypothesis on the memory write operation cost is due to the fact that on long run,
 the result is lowered to aproximatly 30 cycles after 50,000 iterations.
 We choosed to report the average of a run which did not show this reduction in
@@ -94,6 +95,8 @@ We can guess that the procedure call will take about 10 cycle and that each
 argument will cause a cost of one cycle due to the new register access.
 
 \paragraph{Results}
+\begin{table}[h]
+
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -107,12 +110,21 @@ argument will cause a cost of one cycle due to the new register access.
 6 & 2  & 14  & 16  & 14.456 cycles \\ \hline
 7 & 2  & 15  & 17  & 16.518 cycles \\ \hline
 \end{tabular} \\
+\end{center}
+\caption{Procedure calls\label{tab:procCall}}
+\end{table}
+\begin{figure}[h]
+
+\begin{center}
 \includegraphics[scale=0.8]{procCallImage}
 \end{center}
+\caption{Procedure calls\label{fig:procCallf}}
+\end{figure}
 
 
-\paragraph{Accuracy of Estimates}
-The results are low as predicted. Apparently the cost of accessing one more argument is too low to be detected. Only when the function take 7 aguments, which cannot all fit into the registers. The 7th argument is put into the stack and the cost for doing that turns out to be about 2 cycles.
+
+
+As what we can see in figure \ref{fig:procCallf} and table \ref{tab:procCall}, The results are low as predicted. Apparently the cost of accessing one more argument is too low to be detected. Only when the function take 7 aguments, which cannot all fit into the registers. The 7th argument is put into the stack and the cost for doing that turns out to be about 2 cycles.
 
 \paragraph{Success of Methodology}
 
@@ -136,7 +148,7 @@ The way back need also to be done.
 We except something like 400 cycles for each context switch, so a total of about 800 cycles.
 
 \paragraph{Results}
-
+\begin{table} [h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -149,16 +161,16 @@ Context switch (average) & 200 cycles & 600 cycles & 800 cycles & 750 cycles\\
 \end{tabular}
 \end{center}
 
-The first call is always slow, probably due to the need to read kernel code and
+\caption{System calls\label {tab:sysCall}}
+\end{table}
+
+As what we can see in table \ref{tab:sysCall}, The first call is always slow, probably due to the need to read kernel code and
 kernel memory which are not in cache.
 The following calls are going faster probably due to branch prediction and
 cache.
 We can see that system calls are much expensiver than procedure calls as
 excepted.
 
-\paragraph{Accuracy of Estimates}
-We didn't predicted that the first run would be that slow.
-The following
 
 \paragraph{Success of Methodology}
 
@@ -182,6 +194,7 @@ As mentioned earlier, the thread has less data to copy than process do. Meanwhil
 
 
 \paragraph{Results}
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l | l |}
 \hline
@@ -191,10 +204,11 @@ fork() process 		& 20  & 10000  	& 10000 & 1198519.65 cycles & 2257852 cycles\\ 
 thr\_create() thread 	& 20  & 8000	& 8000  &  157433.27 cycles & 2273593 cycles \\ \hline
 \end{tabular}
 \end{center}
+\caption{Task creation time\label{tab:task-creation}}
 
+\end{table}
 
-\paragraph{Accuracy of Estimates}
-The measurement result mostly fits our prediction besides the fact that the number of cycles are way bigger than what we expected.
+As seen in table \ref{tab:task-creation}, the measurement result mostly fits our prediction besides the fact that the number of cycles are way bigger than what we expected.
 \paragraph{Success of Methodology}
 For testing the overhead of creating a new process, we simply called fork(). It turned out that it takes about 750,000 clock cycles for creating it without caching and less than 500,000 with caching.While for the overhead of creating a new thread, we simply called pthread\_creat(). It turned out that it takes about 2000,000 clock cycles for creating it without caching and less than 80,000 with caching.
 The fact thread creation without caching is taking way longer time than the one for process creation doesn't really make sense to us right now, and we will look into that later as the project goes. But considering that thread creation does't envolve memory alloction, the average case for thread creation is generally faster then the one for process creation.
@@ -204,16 +218,19 @@ The fact thread creation without caching is taking way longer time than the one 
 \paragraph{Methodology}
 \paragraph{Predictions}
 \paragraph{Results}
-
+\begin{table}
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cose & Software cost & Prediction & Measured \\
+Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
 
-\paragraph{Accuracy of Estimates}
+\caption{Context switch time\label{tab:context-switch-time}}
+\end{table}
+As what we can see in \ref{tab:context-switch-time},blalblalblalb
+
 \paragraph{Success of Methodology}
 We measured the context switching overhead for both processes and threads. The way we define context switching is by creating a child process/thread and make the child do some task and return back to the parent. The overhead of such context switching is going to be the time start from the creation of the child to the time execution gets back to the parent process/thread excluding the time for child to execute. We only tested the context switching within 2 different processes.
 //***TODO actual result
