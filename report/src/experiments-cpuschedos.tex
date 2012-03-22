@@ -2,22 +2,20 @@
 
 \subsubsection{Measurement overhead}
 
+\paragraph{Methodology}
 As we are microbenchmarking, the overhead of the measurement tools that we
 choosed may influence our results. Thus we need to know the cost of reading
 the clock and since we are using loops for averaging the results of the tests, we
-also need to know the overhead caused by these loops.
-
-\paragraph{Methodology}
+also need to know the overhead caused by these loops.\\
 We are using the \emph{rdtsc} assembly instruction to do the measurement.
 The \emph{rdtsc} instruction allows us to read the \emph{Time Stamp Counter}
 which is a 64 bit counter containing the number of cycles elapsed since his
-reset.
+reset.\\
 In terms of implementation, the instruction is integrated in the code using
 inline assembly and is called using a function which is inlined to avoid the
 overhead of the procedure call and the stack frame creation.
 To measure the cost of the reading clock operation, we measured the result between
 two calls and repeated the operation 100,000 times.\\
-
 The loop overhead has been measured with 100,000 iterations.
 
 \paragraph{Predictions}
@@ -222,7 +220,10 @@ The fact thread creation without caching is taking way longer time than the one 
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cost & Software cost & Prediction & Measured \\
+Operation 				& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hline
+process context switch 	& 				&				&			& 2010805.721 cycles \\hline
+thread context switch 	& 				&				&			& 1895295.586 cycles \\hline
+pipe overhead			& 				&				&			& 45275.283 cycles \\hline
 \hline
 \end{tabular}
 \end{center}
