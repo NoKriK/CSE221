@@ -98,15 +98,15 @@ argument will cause a cost of one cycle due to the new register access.
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-\# of args & Hardware cost & Software cost & Prediction & Measured \\ \hline
-0 & 2  & 8   & 10  & 14.471 cycles \\ \hline
-1 & 2  & 9   & 11  & 14.471 cycles \\ \hline
-2 & 2  & 10  & 12  & 14.455 cycles \\ \hline
-3 & 2  & 11  & 13  & 14.462 cycles \\ \hline
-4 & 2  & 12  & 14  & 14.461 cycles \\ \hline
-5 & 2  & 13  & 15  & 14.461 cycles \\ \hline
-6 & 2  & 14  & 16  & 14.456 cycles \\ \hline
-7 & 2  & 15  & 17  & 16.518 cycles \\ \hline
+\# of args 	& Hardware cost 	& Software cost & Prediction & Measured \\ \hline
+0 & 2 cycles 	& 8 cycles  		& 10 cycles 	& 14.471 cycles \\ \hline
+1 & 2 cycles 	& 9 cycles  		& 11 cycles 	& 14.471 cycles \\ \hline
+2 & 2 cycles 	& 10 cycles  		& 12 cycles 	& 14.455 cycles \\ \hline
+3 & 2 cycles 	& 11 cycles 		& 13 cycles 	& 14.462 cycles \\ \hline
+4 & 2 cycles 	& 12 cycles 		& 14 cycles 	& 14.461 cycles \\ \hline
+5 & 2 cycles 	& 13 cycles 		& 15 cycles 	& 14.461 cycles \\ \hline
+6 & 2 cycles 	& 14 cycles 		& 16 cycles 	& 14.456 cycles \\ \hline
+7 & 2 cycles 	& 15 cycles 		& 17 cycles 	& 16.518 cycles \\ \hline
 \end{tabular} \\
 \end{center}
 \caption{Procedure calls\label{tab:procCall}}
@@ -151,7 +151,7 @@ We except something like 400 cycles for each context switch, so a total of about
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cost & Software cost & Prediction & Measured \\
+Operation 				& Hardware cost & Software cost & Prediction & Measured \\
 \hline
 Context switch (1st run) & 200 cycles & 600 cycles & 800 cycles & 5000 cycles\\
 \hline
@@ -163,19 +163,14 @@ Context switch (average) & 200 cycles & 600 cycles & 800 cycles & 750 cycles\\
 \caption{System calls\label {tab:sysCall}}
 \end{table}
 
-As what we can see in table \ref{tab:sysCall}, The first call is always slow, probably due to the need to read kernel code and
-kernel memory which are not in cache.
+
 As what we can see in table \ref{tab:sysCall}, The first call is always slow, due to the need to read kernel code and
 kernel memory which are not in cache. As we discussed ealier, the fact we are using virtual machine is giving us a worse performance on TLB misses. The first system call or procedure call will always experience a TLB miss.
 The following calls are going faster probably due to branch prediction and
 cache.
-We can see that system calls are much expensiver than procedure calls as
-excepted.
-We can see that system calls are much more expensive than procedure calls as excepted.
-
 
 \paragraph{Success of Methodology}
-
+We can see that system calls are much expensiver than procedure calls as excepted. Here is the reasons, first of all, system call by itself is a normal procedure call, it need to do everything a procedure call need to do. Secondly, the system call need more time for loading function and switching to the kernel mode. The way we used for measuring system and procedure calls are really successful.
 
 \subsubsection{Task creation time}
 \paragraph{Methodology}
@@ -203,8 +198,8 @@ As mentioned earlier, the thread has less data to copy than process do. Meanwhil
 \hline
 Operation & H/W cost & S/W cost & Prediction & Measured average & Measured first creation \\
 \hline
-fork() process 		& 20  & 10000  	& 10000 & 1198519.65 cycles & 2257852 cycles\\ \hline
-thr\_create() thread 	& 20  & 8000	& 8000  &  157433.27 cycles & 2273593 cycles \\ \hline
+fork() process 		& 20 cycles & 10000 cycles 	& 10000 cycles& 1198519.65 cycles & 2257852 cycles\\ \hline
+thr\_create() thread 	& 20 cycles & 8000 cycles		& 8000 cycles &  157433.27 cycles & 2273593 cycles\\ \hline
 \end{tabular}
 \end{center}
 \caption{Task creation time\label{tab:task-creation}}
@@ -219,26 +214,31 @@ The fact thread creation without caching is taking way longer time than the one 
 
 \subsubsection{Context switch time}
 \paragraph{Methodology}
+
+We measured the context switching time for both processes and threads. We used pipes in order to measure them. However, becasue of the fact that pipes have quite a big overhead by itself. We measured it seperately at the same time. Pipe would force a context switch into kernel mode when they are reading or writing. Similar to the previous task creation measurement, we used fork() and thr\_create() for creating new process and threads. The main/parent process waits to read from pipe where the child process or thread is writing to. 
+
+
+
+
+
 \paragraph{Predictions}
+Similar to task creation time, we would expect to see a smaller amount of time for thread context switching than process context switching. Based on the tasked creation time we can see in table \ref{tab:task-creation}, our prediction for process context switching is 2,000,000 clock cycles and for process context switching is 1,500,000 clock cycles. Meanwhile, our prediction for the pipe overhead is 30000 clock cycles.
+
+
+
 \paragraph{Results}
 \begin{table}
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation 				& Hardware cost 	& Software cost 	& Prediction 	& Measured \\
-
-
 
 Operation 				& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hline
-process context switch 	& 				&				&			& 2010805.721 cycles \\ \hline
-thread context switch 	& 				&				&			& 1895295.586 cycles \\ \hline
-pipe overhead			& 				&				&			& 45275.283 cycles \\ \hline
+
+process context switch 	& 				&				&2000000 cycles	& 2010805.721 cycles \\
 \hline
-process context switch 	& 				&				&			& 2010805.721 cycles \\
+thread context switch 	& 				&				&1500000 cycles	& 1895295.586 cycles \\ 
 \hline
-thread context switch 	& 				&				&			& 1895295.586 cycles \\ 
-\hline
-pipe overhead			& 				&				&			& 45275.283 cycles \\ 
+pipe overhead			& 				&				&30000 cycles	& 45275.283 cycles \\ 
 \hline
 \hline
 \end{tabular}
@@ -246,10 +246,10 @@ pipe overhead			& 				&				&			& 45275.283 cycles \\
 
 \caption{Context switch time\label{tab:context-switch-time}}
 \end{table}
-As what we can see in \ref{tab:context-switch-time},blalblalblalb
+As what we can see in table \ref{tab:context-switch-time}, same as what we expected, the time it takes for context switching between threads is a lot shorter than the one for processes.
 
 \paragraph{Success of Methodology}
-We measured the context switching overhead for both processes and threads. The way we define context switching is by creating a child process/thread and make the child do some task and return back to the parent. The overhead of such context switching is going to be the time start from the creation of the child to the time execution gets back to the parent process/thread excluding the time for child to execute. We only tested the context switching within 2 different processes.
-//***TODO actual result
+We measured the context switching overhead for both processes and threads. The overhead of such context switching is going to be the time start from the creation of the child to the time execution gets back to the parent process/thread excluding the time for child to execute. We only tested the context switching within 2 different processes. Due to the lack of time, we were not measuring the context switching time among more than 2 processes. However, this is something good to measure in a real situation because it makes more sense to execute the program using the optimized number of threads in order to get ebst performance.
+
 
 
