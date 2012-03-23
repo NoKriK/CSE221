@@ -7,6 +7,17 @@ Evaluate for the TCP protocol. For each quantity, compare both remote and loopba
 //NOTE: above is the guide line
 
 \paragraph{Methodology}
+We developped a basic tcp server which accept connections and sends back the
+data it receives.
+The tcp client connect to the server and does one write and one read of a message of
+the size of the Maximum Segment Size (MSS).
+The operation is repeated 10,000 times and the result reported is the average.
+
+For the ICMP measure, we averaged the resulted on 1000 runs.
+\begin{verbatim}
+ping -n -s 127.0.0.1 56 100 
+\end{verbatim}
+
 \paragraph{Predictions}
 \paragraph{Results}
 \begin{table}[h]

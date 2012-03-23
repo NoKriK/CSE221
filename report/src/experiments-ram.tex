@@ -127,8 +127,30 @@ Then we filled the first array to put it into main memory first and so that the 
 Afterwards, we filled the second array so that the first array will be totally paged out to the swap space.
 The page fault service time is going to be the time it takes to get the value of an element from the first array.
 
-\paragraph{Predictions}
+We averaged the result on 10 run as more would have taken to much time.
 
+\paragraph{Predictions}
+The latency to page in a page from the disks will be really high.
+
+The request will travers many layers :
+\begin{enumerate}
+\item Page fault into the solaris operating system and verifications.
+\item After verification the solaris operating system will make a request on
+he ZFS volume used as swap partition.
+\item The request on the ZFS volume will be translated to an hypercall to the
+host operating system for the block on the virtual device.
+\item The host operating system will verify the call and translate the request
+to a location on the logical volume associated with the virtual machine.
+\item The logical volume manager of the host operating system will make a
+request to the raid virtual device.
+\item The raid layer will arrange the I/O and access the disk.
+\item The result will do all the way back.
+\end{enumerate}
+
+The disk has an average access time of 18.7 ms but the I/O operation may be
+delayed.
+We except the result to be at least 100 ms due to the need to schedule the
+operation.
 
 \paragraph{Results}
 \begin{table}[h]
@@ -140,7 +162,6 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \end{tabular}
 \end{center}
 \caption{Page fault service time\label{tab:page-fault}}
-
 \end{table}
 
 As seen in table \ref{tab:page-fault} blalba

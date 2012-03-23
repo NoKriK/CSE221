@@ -1,82 +1,21 @@
 /*
-**
-**
 ** This is software is intended to measure basic system functionnalities.
+** This is an academic project
 */
 
-#include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <thread.h>
 #include <wait.h>
 #include <strings.h>
+#include "sysMeasureTool.h"
 
 unsigned int	gl_loopcycle = 10000;
-
-#define LOOPCYCLE gl_loopcycle
-
-/* Crazy macro to measure outide the loop */
-#define MEASUREOUTLOOP(X)	\
-{				\
-unsigned long long b;		\
-unsigned long long c;		\
-unsigned int measureloopcnt;		\
-				\
-b = rdtsc();				\
-for (measureloopcnt = 0; measureloopcnt < LOOPCYCLE; ++measureloopcnt)\
-{						\
-	X;					\
-}						\
-c = rdtsc();				\
-printf("Total execution time is : %llu\nEach execution takes about %f clock cycles (averaging from %d iterations)\n", \
-	c - b, (double)(c - b) / (double)LOOPCYCLE, LOOPCYCLE);\
-}
-
-/* Crazy macro to measure inside the loop */
-#define MEASUREINLOOP(MAX, X) 	\
-{				\
-unsigned long long b;		\
-unsigned long long c;		\
-unsigned long long res = 0;	\
-unsigned int loopcnt;		\
-unsigned int realloop = LOOPCYCLE;		\
-				\
-for (loopcnt = 0; loopcnt < LOOPCYCLE; ++loopcnt)\
-{						\
-	b = rdtsc();				\
-	X;					\
-	c = rdtsc();				\
-	printf("%llu\n", c - b);		\
-	if (c - b < MAX)			\
-		res += c - b;			\
-	else					\
-		realloop--;			\
-}						\
-printf("Total execution time is : %llu\nEach execution takes about %f clock cycles (averaging from %d iterations)\n", \
-	res, (double)res / (double)realloop, realloop);\
-}
-
-/* BEGIN Prototype of the functions to inline */
-static inline uint64_t	rdtsc(void) __attribute__((always_inline));
-/* END Prototype of the functions to inline */
-
-typedef struct s_measures {
-	char	*argname;
-	void	(*func)();
-}	t_measures;
+double		gl_lastavgres;
 
 static const char*	gl_progname;
 
-
-static uint64_t	inline rdtsc(void)
-{
-  uint32_t hi, lo;
-  __asm__ __volatile__ ("rdtsc" : "=a"(lo), "=d"(hi));
-  return ( lo | ((uint64_t)hi << 32));
-}
-
-
-static void 	readClock(void)
+static void 	readClock(char **arg)
 {
 	MEASUREINLOOP(2000, )
 }
@@ -86,7 +25,7 @@ void* uselessfunc(void *p)
 	return (NULL);
 }
 
-static void 	kernelThread(void)
+static void 	kernelThread(char **arg)
 {
 	MEASUREINLOOP(300000,
 	thr_create(NULL, 0, uselessfunc, NULL, 0, NULL);
@@ -94,7 +33,7 @@ static void 	kernelThread(void)
 	);
 }
 
-static void 	processCreation(void)
+static void 	processCreation(char **arg)
 {
 	MEASUREINLOOP(3000000,
 		if (fork() == 0)
@@ -105,46 +44,54 @@ static void 	processCreation(void)
 	);
 }
 
-static void 	loop(void)
+static void 	loop(char **arg)
 {
-	MEASUREOUTLOOP()
+	MEASUREOUTLOOP(1, asm("");)
 }
 
-static void	proc0(void) { }
-static void	proc1(int a) { }
-static void	proc2(int a, int b) { }
-static void	proc3(int a, int b, int c) { }
-static void	proc4(int a, int b, int c, int d) { }
-static void	proc5(int a, int b, int c, int d, int f) { }
-static void	proc6(int a, int b, int c, int d, int f, int g) { }
-static void	proc7(int a, int b, int c, int d, int f, int g, int h) { }
+static void	proc0(void) __attribute__((noinline));
+static void	proc1(int a) __attribute__((noinline));
+static void	proc2(int a, int b) __attribute__((noinline));
+static void	proc3(int a, int b, int c) __attribute__((noinline));
+static void	proc4(int a, int b, int c, int d) __attribute__((noinline));
+static void	proc5(int a, int b, int c, int d, int f) __attribute__((noinline));
+static void	proc6(int a, int b, int c, int d, int f, int g) __attribute__((noinline));
+static void	proc7(int a, int b, int c, int d, int f, int g, int h) __attribute__((noinline));
 
-static void 	procCall(void)
+static void	proc0(void) { asm (""); }
+static void	proc1(int a) { asm (""); }
+static void	proc2(int a, int b) { asm (""); }
+static void	proc3(int a, int b, int c) { asm (""); }
+static void	proc4(int a, int b, int c, int d) { asm (""); }
+static void	proc5(int a, int b, int c, int d, int f) { asm (""); }
+static void	proc6(int a, int b, int c, int d, int f, int g) { asm (""); }
+static void	proc7(int a, int b, int c, int d, int f, int g, int h) { asm (""); }
+
+static void 	procCall(char **arg)
 {
 	fprintf(stdout, "Procedure call cost with 0 argument :\n");
-	MEASUREOUTLOOP(proc0())
+	MEASUREOUTLOOP(1, proc0())
 	fprintf(stdout, "Procedure call cost with 1 argument :\n");
-	MEASUREOUTLOOP(proc1(0))
+	MEASUREOUTLOOP(1, proc1(0))
 	fprintf(stdout, "Procedure call cost with 2 argument :\n");
-	MEASUREOUTLOOP(proc2(0, 42))
+	MEASUREOUTLOOP(1, proc2(0, 42))
 	fprintf(stdout, "Procedure call cost with 3 argument :\n");
-	MEASUREOUTLOOP(proc3(0, 42, 84))
+	MEASUREOUTLOOP(1, proc3(0, 42, 84))
 	fprintf(stdout, "Procedure call cost with 4 argument :\n");
-	MEASUREOUTLOOP(proc4(0, 42, 84, 245))
+	MEASUREOUTLOOP(1, proc4(0, 42, 84, 245))
 	fprintf(stdout, "Procedure call cost with 5 argument :\n");
-	MEASUREOUTLOOP(proc5(0, 42, 84, 245, 23))
+	MEASUREOUTLOOP(1, proc5(0, 42, 84, 245, 23))
 	fprintf(stdout, "Procedure call cost with 6 argument :\n");
-	MEASUREOUTLOOP(proc6(0, 42, 84, 245, 23, 453))
+	MEASUREOUTLOOP(1, proc6(0, 42, 84, 245, 23, 453))
 	fprintf(stdout, "Procedure call cost with 7 argument :\n");
-	MEASUREOUTLOOP(proc7(0, 42, 84, 245, 23, 90, 51))
+	MEASUREOUTLOOP(1, proc7(0, 42, 84, 245, 23, 90, 51))
 }
 
-static void 	sysCall(void)
+static void 	sysCall(char **arg)
 {
-	MEASUREOUTLOOP(getpid())
+	MEASUREOUTLOOP(1, getpid())
 }
 
-#define PIPEPROCNB	20
 static void	createPipeTab(int *pipetable, int size)
 {
 	int i;
@@ -159,14 +106,14 @@ static void	createPipeTab(int *pipetable, int size)
 	}
 }
 
-static void	pipeOverhead(void)
+static void	pipeOverhead(char **arg)
 {
 	int	pipetable[PIPEPROCNB * 2];
 	int	i;
 	char	tok = 42;
 
 	createPipeTab(pipetable, PIPEPROCNB);
-	MEASUREOUTLOOP(
+	MEASUREOUTLOOP(1, 
 	for (i = 0; i < PIPEPROCNB; ++i) {
 		if (write(pipetable[i * 2], &tok, 1) != 1) {
 			fprintf(stderr, "Pipe write failed\n");
@@ -205,7 +152,7 @@ static void	measurePipe(int *pipetable)
 {
 	char	tok = 42;
 
-	MEASUREOUTLOOP(
+	MEASUREOUTLOOP(1, 
 		if (write(pipetable[0], &tok, 1) != 1)
 		{
 			fprintf(stderr, "Pipe write failed\n");
@@ -231,7 +178,7 @@ static void	measurePipe(int *pipetable)
 	}
 }
 
-static void		processContextSwitch(void)
+static void		processContextSwitch(char **arg)
 {
 	int		pipetable[PIPEPROCNB * 2];
 	int		i;
@@ -251,7 +198,7 @@ static void		processContextSwitch(void)
 		waitid(P_ALL, 0, NULL, WEXITED);
 }
 
-static void		threadContextSwitch(void)
+static void		threadContextSwitch(char **arg)
 {
 	static int	pipetable[PIPEPROCNB * 2];
 	int	i;
@@ -271,33 +218,6 @@ static void		threadContextSwitch(void)
 		thr_join(0, NULL, NULL);
 }
 
-
-#define CACHETABSI 1024 * 1024 * 32
-static void 	cache(void)
-{
-	int	*tab;
-	int	*tab1;
-	int	i;
-	int	res;
-
-	if (!(tab = malloc(CACHETABSI * sizeof(*tab))) ||
-		!(tab1 = malloc(CACHETABSI * sizeof(*tab))))
-	{
-		fprintf(stderr, "Malloc failed\n");
-		exit(1);
-	}
-	
-	MEASUREINLOOP(100000000,
-	for (i = 0; i < CACHETABSI; ++i)
-	{
-		res += tab[i];
-	}
-	/*bcopy(tab, tab1, CACHETABSI * sizeof(*tab));*/
-	)
-	free(tab);
-	res = res;
-}
-
 static const t_measures	gl_funcs[] = {
 	{ "kernelThread", kernelThread },
 	{ "processCreation", processCreation },
@@ -305,10 +225,17 @@ static const t_measures	gl_funcs[] = {
 	{ "loop", loop },
 	{ "procCall", procCall },
 	{ "sysCall", sysCall },
-	{ "cache", cache },
 	{ "pipeOverhead", pipeOverhead },
 	{ "processContextSwitch", processContextSwitch },
 	{ "threadContextSwitch", threadContextSwitch },
+	{ "memoryLatency", memoryLatency },
+	{ "memoryBandwidth", memoryBandwidth },
+	{ "pageFault", pageFault },
+	{ "tcpechoServer", tcpechoServer },
+	{ "tcpdiscardServer", tcpdiscardServer },
+	{ "tcpechoClient", tcpechoClient },
+	{ "tcpbandwidthClient", tcpbandwidthClient },
+	{ "tcpconnectClient", tcpconnectClient },
 };
 
 static void 	displayUsage(void)
@@ -325,8 +252,6 @@ static void 	displayUsage(void)
 #include <errno.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <stdarg.h>
-#include <stdio.h>
 
 int		xintstrtol(const char *str)
 {
@@ -350,7 +275,7 @@ int		xintstrtol(const char *str)
 int main(int ac, char **av)
 {
 	unsigned int i;
-	void	(*fmeasure)(void) = NULL;
+	void	(*fmeasure)(char **arg) = NULL;
 
 	gl_progname = av[0];
 	if (ac < 2)
@@ -372,7 +297,7 @@ int main(int ac, char **av)
 		displayUsage();
 		return (1);
 	}
-	if (ac == 3)
+	if (ac >= 3)
 	{
 		gl_loopcycle = xintstrtol(av[2]);
 		if (gl_loopcycle < 0)
@@ -384,7 +309,7 @@ int main(int ac, char **av)
 	}
 	else
 		fprintf(stderr, "%s : No loopcycle value given, falling back to %u.\n", gl_progname, gl_loopcycle);
-	fmeasure();
+	fmeasure((ac > 3) ? av + 3: av + ac);
         return (0);
 }
 
