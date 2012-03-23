@@ -6,14 +6,21 @@
 Evaluate for the TCP protocol. For each quantity, compare both remote and loopback interfaces. Comparing the remote and loopback results, what can you deduce about baseline network performance and the overhead of OS software? For both round trip time and bandwidth, how close to ideal hardware performance do you achieve? In describing your methodology for the remote case, either provide a machine description for the second machine (as above), or use two identical machines.
 //NOTE: above is the guide line
 
+\paragraph{Methodology}
+We developped a basic tcp server which accept connections and sends back the
+data it receives.
+The tcp client connect to the server and does one write and one read of a message of
+the size of the Maximum Segment Size (MSS).
+The operation is repeated 10,000 times and the result reported is the average.
+
+For the ICMP measure, we averaged the resulted on 1000 runs.
 \begin{verbatim}
 ping -n -s 127.0.0.1 56 100 
 \end{verbatim}
 
-\paragraph{Methodology}
 \paragraph{Predictions}
 \paragraph{Results}
-
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -21,8 +28,10 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
+\caption{Round trip time\label{tab:rtt}}
+\end{table}
 
-\paragraph{Accuracy of Estimates}
+As seen in table \ref{tab:rtt}
 \paragraph{Success of Methodology}
 
  Compare with the time to perform a ping (ICMP requests are handled at kernel level).
@@ -39,7 +48,7 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \paragraph{Methodology}
 \paragraph{Predictions}
 \paragraph{Results}
-
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -47,8 +56,10 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
+\caption{Peak bandwidth\label{tab:peak-bandwidth}}
+\end{table}
 
-\paragraph{Accuracy of Estimates}
+As seen in table \ref{tab:Peak bandwidth}
 \paragraph{Success of Methodology}
 
 
@@ -59,7 +70,7 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \paragraph{Methodology}
 \paragraph{Predictions}
 \paragraph{Results}
-
+\begin{table} [h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -67,6 +78,9 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
+\caption{Connection overhead\label{tab:connection-overhead}}
+\end{table}
 
-\paragraph{Accuracy of Estimates}
+As seen in table \ref{tab:connection-overhead}
+
 \paragraph{Success of Methodology}

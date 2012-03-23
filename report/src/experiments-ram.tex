@@ -24,19 +24,11 @@ According to the \emph{Intel® 64 and IA-32 Architectures Optimization Reference
 According to the ram specification the latency is about 15ns.
 It's about 45 cpu cycles as the CPU is running at 3.3Ghz.
 
-\paragraph{Results}
 
-\begin{center}
-\end{center}
-\paragraph{Accuracy of Estimates}
-\paragraph{Success of Methodology}
-We expected to see the RAM access time increases as it goes from L1, L2 to main memory. Basically saying there would be a significant difference among the following three cases: 
-1. iteration of the first 32KB data or less (fit into L1 cache)
-2. iteration of the first 288KB data or less (fit into L1+L2 cache)
-3. iteration of all the whole array(doesn’t fit into caches).
-\paragraph{Predictions}
 \paragraph{Results}
 We are going to present the result table for stride 11 and the plotted graph for different strides from 1 to 15.
+
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{| r | l | l | l | r |}
 \hline
@@ -63,13 +55,25 @@ Size of array 	& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hl
 
 \hline
 \end{tabular}
-\includegraphics[scale=0.8]{memoryLatencyImage}
 \end{center}
-
-\paragraph{Accuracy of Estimates}
+\label{access-time-table}
+\caption{RAM latency}
+\end{table}
 \paragraph{Success of Methodology}
 
-The result we got from our measurement shown that //TODO actual result
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{memoryLatencyImage}
+\end{center}
+\caption {RAM latency\label{fig:access-timef}}
+
+\end{figure}
+
+
+
+The figure \ref{fig:access-timef} and table \ref{access-time-table} show that  //TODO actual result
 
 
 
@@ -99,7 +103,7 @@ We are awaiting result wich should be near this value but doesn't reach this val
 We also have a small overhead in our measurement due to the loop operations.
 
 \paragraph{Results}
-
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
@@ -107,7 +111,10 @@ Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
-\paragraph{Accuracy of Estimates}
+
+\caption{RAM bandwith\label{tab:ram-bandwith}}
+\end{table}
+
 \paragraph{Success of Methodology}
 
 
@@ -154,10 +161,9 @@ Operation & Hardware cose & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Page fault service time}
-\label{fig:page-fault}
+\caption{Page fault service time\label{tab:page-fault}}
 \end{table}
 
-As seen in table \ref{fig:page-fault} blalba
+As seen in table \ref{tab:page-fault} blalba
 \paragraph{Success of Methodology}
 
