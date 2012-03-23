@@ -19,10 +19,11 @@ According to the \emph{Intel® 64 and IA-32 Architectures Optimization Reference
 \begin{description}
 \item[L1 cache] 4 cycles
 \item[L2 cache] 12 cycles
-\item[L3 cache] 26-31 cycles
+\item[L3 cache] 28 cycles
+\item[Main memory] 45 cycles
 \end{description}
-According to the ram specification the latency is about 15ns.
-It's about 45 cpu cycles as the CPU is running at 3.3Ghz.
+According to the RAM specification the latency is about 15ns.
+It's about 45 cpu cycles as the CPU is running at 3.3Ghz. Because of the way our measurement is setup, there is no software cost involved in this case.
 
 
 \paragraph{Results}
@@ -33,25 +34,25 @@ We are going to present the result table for stride 11 and the plotted graph for
 \begin{tabular}{| r | l | l | l | r |}
 \hline
 Size of array 	& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hline
-512B 			&				&				&			&3.895 cycles	\\ \hline
-1KB 			&				&				&			&3.886 cycles		\\ \hline
-2KB 			&				&				&			&3.885 cycles		\\ \hline
-4KB 			&				&				&			&3.886 cycles		\\ \hline
-8KB 			&				&				&			&3.886 cycles		\\ \hline
-16KB 			&				&				&			&3.888 cycles		\\ \hline
-32KB 			&				&				&			&3.891 cycles		\\ \hline
-64KB 			&				&				&			&5.949 cycles		\\ \hline
-128KB 		&				&				&			&5.945 cycles		\\ \hline
-256KB 		&				&				&			&6.209 cycles		\\ \hline
-512KB 		&				&				&			&10.314 cycles		\\ \hline
-1MB 			&				&				&			&10.399 cycles		\\ \hline
-2MB 			&				&				&			&10.757 cycles		\\ \hline
-4MB 			&				&				&			&15.585 cycles		\\ \hline
-8MB 			&				&				&			&30.265 cycles		\\ \hline
-16MB 			&				&				&			&37.458 cycles		\\ \hline
-32MB 			&				&				&			&37.686 cycles		\\ \hline
-64MB 			&				&				&			&37.092 cycles		\\ \hline
-128MB 		&				&				&			&37.619 cycles		\\ \hline
+512B 			&	4 cycles		&	0 cycle		&	4 cycles	&3.895 cycles	\\ \hline
+1KB 			&	4 cycles		&	0 cycle		&	4 cycles	&3.886 cycles		\\ \hline
+2KB 			&	4 cycles		&	0 cycle		&	4 cycles	&3.885 cycles		\\ \hline
+4KB 			&	4 cycles		&	0 cycle		&	4 cycles	&3.886 cycles		\\ \hline
+8KB 			&	4 cycles		&	0 cycle		&	4 cycles	&3.886 cycles		\\ \hline
+16KB 			&	4 cycles		&	0 cycle		&	4 cycles	&3.888 cycles		\\ \hline
+32KB 			&	4 cycles		&	0 cycle		&	4 cycles	&3.891 cycles		\\ \hline
+64KB 			&	12 cycles		&	0 cycle		&	12 cycles	&5.949 cycles		\\ \hline
+128KB 		&	12 cycles		&	0 cycle		&	12 cycles	&5.945 cycles		\\ \hline
+256KB 		&	12 cycles		&	0 cycle		&	12 cycles	&6.209 cycles		\\ \hline
+512KB 		&	28 cycles		&	0 cycle		&	28 cycles	&10.314 cycles		\\ \hline
+1MB 			&	28 cycles		&	0 cycle		&	28 cycles	&10.399 cycles		\\ \hline
+2MB 			&	28 cycles		&	0 cycle		&	28 cycles	&10.757 cycles		\\ \hline
+4MB 			&	28 cycles		&	0 cycle		&	28 cycles	&15.585 cycles		\\ \hline
+8MB 			&	45 cycles		&	0 cycle		&	45 cycles	&30.265 cycles		\\ \hline
+16MB 			&	45 cycles		&	0 cycle		&	45 cycles	&37.458 cycles		\\ \hline
+32MB 			&	45 cycles		&	0 cycle		&	45 cycles	&37.686 cycles		\\ \hline
+64MB 			&	45 cycles		&	0 cycle		&	45 cycles	&37.092 cycles		\\ \hline
+128MB 		&	45 cycles		&	0 cycle		&	45 cycles	&37.619 cycles		\\ \hline
 
 \hline
 \end{tabular}
@@ -59,7 +60,7 @@ Size of array 	& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hl
 \label{access-time-table}
 \caption{RAM latency}
 \end{table}
-\paragraph{Success of Methodology}
+
 
 
 
@@ -73,10 +74,10 @@ Size of array 	& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hl
 
 
 
-The figure \ref{fig:access-timef} and table \ref{access-time-table} show that  //TODO actual result
+The figure \ref{fig:access-timef} and table \ref{access-time-table} clearly indicated the average reading time for L1 cache, L2 cache, L3 cache and main memory. When the stride is small, the reading time for array of larger than L3 cache is still about the same as L1 because those data were more likely to be prefetched into the cache.
 
-
-
+\paragraph{Success of Methodology}
+We successfully replicated the result of the lmbench paper, and provided more information such as L3 cache reading time. The reason that our prediction time is actually larger than the measured time is probably because of the fact that some pre-fetching is going on when we set up the reading operation for the program. Overall, this measurement is really successful.
 
 \subsubsection{RAM bandwidth}
 \paragraph{Methodology}
@@ -95,28 +96,35 @@ All these operations are made on values stored in registers.
 The compiler options -funroll-loops also helps avoid the overhead of the loop.
 
 The measurement unit is in cycle for 128MB and is then translated to MB/s by calculating it with the CPU clock rate.
-The result is averaged on 1000 iterations.
+The result is averaged on 10000 iterations.
 
 \paragraph{Predictions}
-According to the specification of the ram, the peak transfer rate is 10666 MB/s.
+According to the specification of the RAM, the peak transfer rate is 10666 MB/s.
 We are awaiting result wich should be near this value but doesn't reach this value as this is a theoritical value.
-We also have a small overhead in our measurement due to the loop operations.
+We also have a small overhead in our measurement due to the loop operations. We also expect that the writing takes about 20% higher amount of time than reading.
 
 \paragraph{Results}
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cost & Software cost & Prediction & Measured \\
+Operation 		& Hardware cost & Software cost & Prediction 	& Measured \\
 \hline
+Read 128MB 	& 40000k cycles	& 10			& 40000k cycles	& 43494072.20 cycles \\
+\hline
+Write 128MB 	& 50000k cycles	& 10			& 50000k cycles	& 55758044.23 cycles \\
+\hline
+
 \end{tabular}
 \end{center}
 
-\caption{RAM bandwith\label{tab:ram-bandwith}}
+\caption{RAM bandwith\label{tab:ram-bandwidth}}
 \end{table}
 
-\paragraph{Success of Methodology}
+According to the table \ref {tab:ram-bandwidth} above, we calculated the read tranfer rate is 9711 MB/s and the write transfer rate is 7575 MB/s.
 
+\paragraph{Success of Methodology}
+Comparing to the specification of the RAM, our result is really close to the ideal transfer rate. The writing time is about 20% slower than the reading time as we expected.
 
 
 
@@ -127,7 +135,7 @@ Then we filled the first array to put it into main memory first and so that the 
 Afterwards, we filled the second array so that the first array will be totally paged out to the swap space.
 The page fault service time is going to be the time it takes to get the value of an element from the first array.
 
-We averaged the result on 10 run as more would have taken to much time.
+We averaged the result on 10 run as more would have taken too much time.
 
 \paragraph{Predictions}
 The latency to page in a page from the disks will be really high.
@@ -144,7 +152,7 @@ to a location on the logical volume associated with the virtual machine.
 \item The logical volume manager of the host operating system will make a
 request to the raid virtual device.
 \item The raid layer will arrange the I/O and access the disk.
-\item The result will do all the way back.
+\item The result will go all the way back.
 \end{enumerate}
 
 The disk has an average access time of 18.7 ms but the I/O operation may be
@@ -157,7 +165,7 @@ operation.
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cose & Software cost & Prediction & Measured \\
+Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
