@@ -122,10 +122,10 @@ argument will cause a cost of one cycle due to the new register access.
 
 
 
-As what we can see in figure \ref{fig:procCallf} and table \ref{tab:procCall}, The results are low as predicted. Apparently the cost of accessing one more argument is too low to be detected. Only when the function take 7 aguments, which cannot all fit into the registers. The 7th argument is put into the stack and the cost for doing that turns out to be about 2 cycles.
+As what we can see in figure \ref{fig:procCallf} and table \ref{tab:procCall}, The results are low as predicted. Apparently the cost of accessing one more argument is too low to be detected. Only when the function take 7 aguments, which cannot all fit into the registers. The 7th argument is put into the stack and the cost for doing that turned out to be about 2 cycles.
 
 \paragraph{Success of Methodology}
-
+The way we used for testing procedure call is quite successful. At first, we tried to use a function sums up the parameters it takes in. As a result, the running time for procedures with different number of arguments are different. However,that is mainly because of the fact more add operations are preformed in that case. After we changed the functions to be a int type always return 1, we got result shown in figure \ref{fig:procCallf}. At first we were really confused about it, later we realized that not all of the arguments are put on to the stack on x86-64 CPUs.
 
 
 
@@ -139,7 +139,7 @@ call as it's supposed to be the least expensive system call.
 We then ran it 10,000 times to get an averaged result.
 
 \paragraph{Predictions}
-System call are excepted to be more expensive than simple procedure call as they
+System call are expected to be more expensive than simple procedure call as they
 produce a context switch.
 The state of the process need to be saved and a kernel thread must be launched.
 The way back need also to be done.
@@ -162,12 +162,11 @@ Context switch (average) & 200 cycles & 600 cycles & 800 cycles & 750 cycles\\
 \caption{System calls\label {tab:sysCall}}
 \end{table}
 
-As what we can see in table \ref{tab:sysCall}, The first call is always slow, probably due to the need to read kernel code and
-kernel memory which are not in cache.
+As what we can see in table \ref{tab:sysCall}, The first call is always slow, due to the need to read kernel code and
+kernel memory which are not in cache. As we discussed ealier, the fact we are using virtual machine is giving us a worse performance on TLB misses. The first system call or procedure call will always experience a TLB miss.
 The following calls are going faster probably due to branch prediction and
 cache.
-We can see that system calls are much expensiver than procedure calls as
-excepted.
+We can see that system calls are much more expensive than procedure calls as excepted.
 
 
 \paragraph{Success of Methodology}
@@ -180,6 +179,7 @@ We used the system call fork() for creating a new process and record the number 
 Similarly, we used the solaris implementation, which is thr\_create() for cloning thread. At first we used pthread\_create() fuction for thread creation operation. We replaced it with thr\_create() later because it is not meant for Solaris system, which is not as accurate when we are doing the measurement of the whole Solaris OS. Right after the creation of the thread, we used thr\_join() to wait for the termination of itself.
 At the same time, we measured the time for the program to create process and threads for the first time only as well, for loading the functions we used in this measurement into the cache.
 The creation overhead has been measured with 100,000 iterations.
+
 
 
 \paragraph{Predictions}
@@ -221,9 +221,9 @@ The fact thread creation without caching is taking way longer time than the one 
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 Operation 				& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hline
-process context switch 	& 				&				&			& 2010805.721 cycles \\hline
-thread context switch 	& 				&				&			& 1895295.586 cycles \\hline
-pipe overhead			& 				&				&			& 45275.283 cycles \\hline
+process context switch 	& 				&				&			& 2010805.721 cycles \\ \hline
+thread context switch 	& 				&				&			& 1895295.586 cycles \\ \hline
+pipe overhead			& 				&				&			& 45275.283 cycles \\ \hline
 \hline
 \end{tabular}
 \end{center}
