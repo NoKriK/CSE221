@@ -1,0 +1,108 @@
+\subsection{File System}
+
+\subsubsection{Size of file cache}
+
+// NOTE
+Note that this may be very sensitive to other load on the machine. Report results as a graph whose x-axis is the size of the file being accessed and the y-axis is the average read I/O time. Do not use a system call or utility program to determine this metric except to sanity check.
+// NOTE
+
+\paragraph{Methodology}
+\paragraph{Predictions}
+\paragraph{Results}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cose & Software cost & Prediction & Measured \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Size of file cache\label{tab:file-cache}}
+\end{table}
+
+According to the result shown in \ref{tab:file-cache}, we
+
+\paragraph{Success of Methodology}
+
+
+
+\subsubsection{File read time}
+
+//NOTE
+Report for both sequential and random access as a function of file size. Discuss the sense in which your "sequential" access might not be sequential. Ensure that you are not measuring cached data (e.g., use the raw device interface). Report as a graph with a log/log plot with the x-axis the size of the file and y-axis the average per-block time.
+//NOTE
+
+\paragraph{Methodology}
+
+\paragraph{Predictions}
+\paragraph{Results}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cose & Software cost & Prediction & Measured \\
+\hline
+\end{tabular}
+\end{center}
+\caption{File read time\label{tab:file-read-time}}
+\end{table}
+
+According to the result shown in \ref{tab:file-read-time}, we
+
+
+\paragraph{Success of Methodology}
+
+
+
+
+
+\subsubsection{Remote file read time}
+//NOTE
+Repeat the previous experiment for a remote file system. What is the "network penalty" of accessing files over the network?
+//NOTE
+
+\paragraph{Methodology}
+
+\paragraph{Predictions}
+\paragraph{Results}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cose & Software cost & Prediction & Measured \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Remote file read time\label{tab:remote-file-access}}
+\end{table}
+
+According to the result shown in \ref{tab:remote-file-access}, we
+\paragraph{Success of Methodology}
+
+
+
+
+\subsubsection{Contention}
+//NOTE
+Report the average time to read one file system block of data as a function of the number of processes simultaneously performing the same operation on different files on the same disk (and not in the file buffer cache).
+//NOTE
+
+\paragraph{Methodology}
+
+\paragraph{Predictions}
+\paragraph{Results}
+\begin{table}
+\begin{center}
+\begin{tabular}{| l | l | l | l | l |}
+\hline
+Operation & Hardware cose & Software cost & Prediction & Measured \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Contention\label{tab:contention}}
+\end{table}
+
+According to the result shown in \ref{tab:contention}, we
+
+\paragraph{Success of Methodology}
