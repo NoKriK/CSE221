@@ -7,6 +7,9 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <netdb.h>
+#ifdef __linux
+# include <time.h>
+#endif
 #include "sysMeasureTool.h"
 
 #define MSGLEN 2048

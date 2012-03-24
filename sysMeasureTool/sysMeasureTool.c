@@ -5,7 +5,12 @@
 
 #include <unistd.h>
 #include <stdlib.h>
-#include <thread.h>
+#ifdef sun
+# include <thread.h>
+#endif
+#ifdef __linux
+# include <string.h>
+#endif
 #include <wait.h>
 #include <strings.h>
 #include "sysMeasureTool.h"
@@ -25,6 +30,7 @@ void* uselessfunc(void *p)
 	return (NULL);
 }
 
+#ifdef sun
 static void 	kernelThread(char **arg)
 {
 	MEASUREINLOOP(300000,
@@ -32,6 +38,7 @@ static void 	kernelThread(char **arg)
 	thr_join(0, NULL, NULL);
 	);
 }
+#endif
 
 static void 	processCreation(char **arg)
 {
@@ -198,6 +205,7 @@ static void		processContextSwitch(char **arg)
 		waitid(P_ALL, 0, NULL, WEXITED);
 }
 
+#ifdef sun
 static void		threadContextSwitch(char **arg)
 {
 	static int	pipetable[PIPEPROCNB * 2];
@@ -217,9 +225,13 @@ static void		threadContextSwitch(char **arg)
 	for (i = 0; i < PIPEPROCNB - 1; ++i)
 		thr_join(0, NULL, NULL);
 }
+#endif
 
 static const t_measures	gl_funcs[] = {
+#ifdef sun
 	{ "kernelThread", kernelThread },
+#endif
+	{ "processCreation", processCreation },
 	{ "processCreation", processCreation },
 	{ "readClock", readClock },
 	{ "loop", loop },
@@ -227,7 +239,9 @@ static const t_measures	gl_funcs[] = {
 	{ "sysCall", sysCall },
 	{ "pipeOverhead", pipeOverhead },
 	{ "processContextSwitch", processContextSwitch },
+#ifdef sun
 	{ "threadContextSwitch", threadContextSwitch },
+#endif
 	{ "memoryLatency", memoryLatency },
 	{ "memoryBandwidth", memoryBandwidth },
 	{ "pageFault", pageFault },
@@ -236,6 +250,8 @@ static const t_measures	gl_funcs[] = {
 	{ "tcpechoClient", tcpechoClient },
 	{ "tcpbandwidthClient", tcpbandwidthClient },
 	{ "tcpconnectClient", tcpconnectClient },
+	{ "fsCacheSize", fsCacheSize },
+	{ "readFile", readFile },
 };
 
 static void 	displayUsage(void)

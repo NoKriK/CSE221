@@ -3,6 +3,9 @@
 
 # include <unistd.h>
 # include <stdio.h>
+# ifdef __linux
+#  include <stdint.h>
+# endif
 
 # define LOOPCYCLE gl_loopcycle
 
@@ -92,13 +95,15 @@ static inline uint64_t	rdtsc(void)
 }
 
 
-void		memoryLatency(char **arg);
-void		memoryBandwidth(char **arg);
-void		pageFault(char **arg);
-void		tcpechoServer(char **arg);
-void		tcpdiscardServer(char **arg);
-void		tcpechoClient(char **arg);
-void		tcpbandwidthClient(char **arg);
-void		tcpconnectClient(char **arg);
+void	memoryLatency(char **arg);
+void	memoryBandwidth(char **arg);
+void	pageFault(char **arg);
+void	tcpechoServer(char **arg);
+void	tcpdiscardServer(char **arg);
+void	tcpechoClient(char **arg);
+void	tcpbandwidthClient(char **arg);
+void	tcpconnectClient(char **arg);
+void	fsCacheSize(char **arg);
+void	readFile(char **arg);
 
 #endif /* !SYSMEASURETOOL_H_ */
