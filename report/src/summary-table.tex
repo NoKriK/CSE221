@@ -98,7 +98,13 @@ Page fault	& 18.7 ms	& 81.3 ms 	& 100 ms	& 8 ms\\ \hline
 \begin{tabular}{| l | r | r | r | r |} \hline
 Operation 			& Hardware cost 	& Software cost 	& Prediction	& Measured \\ \hline
 
-%%%%%%%%%%%%%%%%%%%
+%connect time
+Local ICMP rtt	& 0 ms	& 0.06 ms & 0.06 ms  & 0.063 ms	\\ \hline
+Local TCP rtt	& 0 ms	& 0.012 ms & 0.012 ms	& 0.065 ms\\ \hline
+Remote ICMP rtt	& 0.12 ms	& 0.32 ms & 0.56ms  & 1.253 ms\\ \hline
+Remote TCP rtt	& 0.12 ms	& 0.32 ms & 0.56ms  & 1.26 ms	\\ \hline\hline
+
+
 %%peak bandwidth
 Local peak bandwidth	&  2161 MB/s	& 23 ms/GB	&  1455 MB/s &  1132MB/s \\
 \hline
@@ -106,7 +112,11 @@ Remote peak bandwidth 	&  11.25 MB/s	& 0 &  11.25MB/s	&  10.56MB/s \\
 \hline\hline
 
 
-%%%%%%%%%%%%%%%%%
+%connection overhead
+Local setup 	&  0.12 ms	& 2.48 ms	&  2.5 ms & 0.074 ms \\ \hline
+Remote setup	&  0.12 ms	& 2.48 ms	&  2.5 ms&  9.899 ms \\ \hline
+Local tear-down 	&  0	& 0.003 ms	&  0.003 ms&  0.017 ms \\ \hline
+Remote tear-down	&  0	& 0.003 ms	&  0.003 ms&  0.013 ms \\ \hline
 
 
 
