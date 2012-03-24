@@ -58,8 +58,8 @@ Size of array 	& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hl
 \hline
 \end{tabular}
 \end{center}
-\label{access-time-table}
-\caption{RAM latency}
+
+\caption{RAM latency\label{tab:access-time}}
 \end{table}
 
 
@@ -69,13 +69,13 @@ Size of array 	& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hl
 \begin{center}
 \includegraphics[scale=0.8]{memoryLatencyImage}
 \end{center}
-\caption {RAM latency\label{fig:access-timef}}
+\caption {RAM latency\label{fig:access-time}}
 
 \end{figure}
 
 
 
-The figure \ref{fig:access-timef} and table \ref{access-time-table} clearly indicated the average reading time for L1 cache, L2 cache, L3 cache and main memory. When the stride is small, the reading time for array of larger than L3 cache is still about the same as L1 because those data were more likely to be prefetched into the cache.
+The figure \ref{fig:access-time} and table \ref{tab:access-time} clearly indicated the average reading time for L1 cache, L2 cache, L3 cache and main memory. When the stride is small, the reading time for array of larger than L3 cache is still about the same as L1 because those data were more likely to be prefetched into the cache.
 
 \paragraph{Success of Methodology}
 We successfully replicated the result of the lmbench paper, and provided more information such as L3 cache reading time. The reason that our prediction time is actually larger than the measured time is probably because of the fact that some pre-fetching is going on when we set up the reading operation for the program. Overall, this measurement is really successful.
@@ -136,7 +136,7 @@ Then we filled the first array to put it into main memory first and so that the 
 Afterwards, we filled the second array so that the first array will be totally paged out to the swap space.
 The page fault service time is going to be the time it takes to get the value of an element from the first array.
 
-We averaged the result on 10 run as more would have taken too much time.
+We averaged the result on 10 runs as more would have taken too much time.
 
 \paragraph{Predictions}
 The latency to page in a page from the disks will be really high.
@@ -166,8 +166,12 @@ operation.
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cost & Software cost & Prediction & Measured \\
+Operation 	& Hardware cost & Software cost & Prediction 	& Measured \\
 \hline
+
+Page fault	& 			&  			& 100ms		& 		 \\
+\hline
+
 \end{tabular}
 \end{center}
 \caption{Page fault service time\label{tab:page-fault}}

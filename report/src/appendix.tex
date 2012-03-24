@@ -1,0 +1,53 @@
+\appendix
+\appendixpage
+\addappheadtotoc
+
+\section{Remote host\label{sec:app-remotehost}}
+The remote server is also a virtual machine.
+This virtual machine is running on top of a VMware ESXi hypervisor.
+It is running on top off an infrastructure we don't control so we don't know all
+the details.
+
+\subsection{Processor}
+The hypervisor is running an Intel quad core processor of the Nehalem generation.
+This is an x86-64 architecture.
+The exact model of the CPU is \emph{Intel(R) Xeon(R) CPU W3565 @ 3.20GHz}.
+\cite{intel-xeon-3565}
+The processor integrates the memory controller.
+
+Detailled characteristics of the hardware processor :
+\begin{description}
+\item[Clock frequency] 3200.000 Mhz
+\item[L1 cache] 64 KB
+\begin{description}
+\item[Data cache] 32 KB
+\item[Instruction cache] 32 KB
+\end{description}
+\item[L2 cache] 256 KB
+\item[L3 cache] 8 MB
+\item[Address sizes] 40 bits physical, 48 bits virtual
+\end{description}
+The virtual machine is restricted to two virtual processor.
+
+\subsection{Motherboard buses}
+Unknown
+
+\subsection{Ram}
+The virtual machine has 512MB of virtual memory.
+We don't know the hardware configuration.
+
+\subsection{Disk}
+The virtual machine is running on top of a 20GiB virtual disk.
+The virtual disk is stored on a shared iSCSI LUN.
+We won't go further into the detail as we are not benchmarking this part.
+
+\subsection{Network}
+The physical server is plugged into a 1GB switch port.
+The network is bridged to the physical switch.
+
+\subsection{Operating System}
+Linux Debian Squeeze 6.0.4
+Output of the uname command :
+\begin{verbatim}
+Linux sas1 2.6.32-5-amd64 #1 SMP Mon Jan 16 16:22:28 UTC 2012 x86_64 GNU/Linux
+\end{verbatim}

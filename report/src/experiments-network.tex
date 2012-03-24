@@ -10,15 +10,31 @@ Evaluate for the TCP protocol. For each quantity, compare both remote and loopba
 We developped a basic tcp server which accept connections and sends back the
 data it receives.
 The tcp client connect to the server and does one write and one read of a message of
-the size of the Maximum Segment Size (MSS).
+the size of the Maximum Segment Size (MSS). The measuement time does not include the time it takes for open close socket operation, hand-shake and termination. The RTT we measured is exactly the time it takes for data to go through a round trip from the system to the remote host.
 The operation is repeated 10,000 times and the result reported is the average.
 
 For the ICMP measure, we averaged the resulted on 1000 runs.
 \begin{verbatim}
-ping -n -s 127.0.0.1 56 100 
+ping -n -s 127.0.0.1 56 1000
 \end{verbatim}
 
+The second machine is described in the Appendix \ref{sec:app-remotehost}.
+
 \paragraph{Predictions}
+The cost of remote request will be high as the packet will travel through :
+\begin{enumerate}
+\item The Solaris OS
+\item The Xen hypervisor through an hypercall.
+The Xen hypervisor also does Network Address Translation (NAT)
+\item Two or more switches
+\item The ESXi hypervisor
+\item The linux guest OS
+\end{enumerate}
+
+We except an higher cost for TCP as the protocol is statefull and the packet
+will be checked against the state tables in the solaris and linux virtual
+machine but also on the Xen hypervisor (router/NAT). 
+
 \paragraph{Results}
 \begin{table}[h]
 \begin{center}
@@ -52,11 +68,19 @@ As seen in table \ref{tab:rtt}
 
 
 \subsubsection{Peak bandwidth}
-
-
-
 \paragraph{Methodology}
+We measured the time elapsed when transfering 2GB of data.
+We developped a tcp server which just drops the packet he receives.
+The client send as much data as he can by packet of the size of the MSS.
+
+We ran the test 100 time and averaged the result.
+
 \paragraph{Predictions}
+The slowest network switch is switching at theoritical speed of 100Mb/s.
+We except the switch to be the bottleneck and to be able to handle only 90\% of
+the theoritical 100Mb/s.
+Thus we except
+
 \paragraph{Results}
 \begin{table}[h]
 \begin{center}
@@ -64,6 +88,11 @@ As seen in table \ref{tab:rtt}
 \hline
 Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
+Local 	&  cycles		& 10			&  cycles	&  cycles \\
+\hline
+Remote 	&  cycles		& 10			&  cycles	&  cycles \\
+\hline
+
 \end{tabular}
 \end{center}
 \caption{Peak bandwidth\label{tab:peak-bandwidth}}
@@ -71,7 +100,8 @@ Operation & Hardware cost & Software cost & Prediction & Measured \\
 
 As seen in table \ref{tab:Peak bandwidth}
 \paragraph{Success of Methodology}
-
+We may have written more data on the socket but it doesn't sound like the
+bottleneck ?
 
 
 
@@ -86,6 +116,17 @@ As seen in table \ref{tab:Peak bandwidth}
 \hline
 Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
+
+Local setup 	&  cycles		& 10			&  cycles	&  cycles \\
+\hline
+Remote setup	&  cycles		& 10			&  cycles	&  cycles \\
+\hline
+Local tear-down 	&  cycles		& 10			&  cycles	&  cycles \\
+\hline
+Remote tear-down	&  cycles		& 10			&  cycles	&  cycles \\
+\hline
+
+
 \end{tabular}
 \end{center}
 \caption{Connection overhead\label{tab:connection-overhead}}
