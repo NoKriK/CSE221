@@ -1,6 +1,6 @@
 \section{Introduction}
 
-Nowadays, common operating system researchs are laying emphesis on improving the performance of existing systems.
+Common operating system researchs are laying emphesis on improving the performance of existing systems.
 It is important for us to understand how to measure the performance of a certain system.
 We are going to conduct our experiments on a virtual machine running the \emph{Oracle Solaris
 11} operating system.
@@ -16,7 +16,7 @@ compiler.
 The options which are used at compilation time are 
 \begin{description}
 \item[-O] which turns on the first level of optimization.
-This necessary because otherwise the compiler always write into the stack the modified values.
+This is necessary because otherwise the compiler always write into the stack the modified values.
 For example, in a loop, on each iteration the value is written back to the stack.
 The cache is hited but it still creates a big overhead.
 \item[-m64] compile the programm in x86\_64 mode.
@@ -28,4 +28,4 @@ At the beginning we started by desactivating all the optimizations.
 When we looked at the assembly code, the code was really underoptimized so we decided to turn on some optimizations.
 We use some tricks to avoid certain optimizations when we don't want them.
 
-At this time we spent 60 hours working on the project each.
+We spent 60 hours working on the project each.

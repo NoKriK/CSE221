@@ -7,14 +7,35 @@ Evaluate for the TCP protocol. For each quantity, compare both remote and loopba
 //NOTE: above is the guide line
 
 \paragraph{Methodology}
+We developped a basic tcp server which accept connections and sends back the
+data it receives.
+The tcp client connect to the server and does one write and one read of a message of
+the size of the Maximum Segment Size (MSS).
+The operation is repeated 10,000 times and the result reported is the average.
+
+For the ICMP measure, we averaged the resulted on 1000 runs.
+\begin{verbatim}
+ping -n -s 127.0.0.1 56 100 
+\end{verbatim}
+
 \paragraph{Predictions}
 \paragraph{Results}
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cose & Software cost & Prediction & Measured \\
+Operation 			& Hardware cost 	& Software cost 		& Prediction 		& Measured \\
 \hline
+Local ICMP rtt		&				&					&				& 		\\
+\hline
+Remote ICMP rtt		&				&					&				& 		\\
+\hline
+Local TCP rtt		&				&					&				& 		\\
+\hline
+Remote TCP rtt		&				&					&				& 		\\
+\hline
+
+
 \end{tabular}
 \end{center}
 \caption{Round trip time\label{tab:rtt}}
@@ -41,7 +62,7 @@ As seen in table \ref{tab:rtt}
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cose & Software cost & Prediction & Measured \\
+Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
@@ -63,7 +84,7 @@ As seen in table \ref{tab:Peak bandwidth}
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cose & Software cost & Prediction & Measured \\
+Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
 \end{tabular}
 \end{center}
