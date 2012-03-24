@@ -1,0 +1,67 @@
+\subsection{Summary table}
+
+\paragraph{Summary}
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| l | r | r | r | r |} \hline
+Operation 			& Hardware cost 	& Software cost 	& Prediction	& Measured \\ \hline
+Reading the clock 	& 25 cycles		& 0 cycles			& 25 cycles 	& 58.555 cycles \\ \hline
+Loop 				& 15 cycles 		& 0 cycles 		& 15 cycles 	& 12.487 cycles \\ \hline \hline
+
+Procedure with 0 argument & 2 cycles 	& 8 cycles  		& 10 cycles 	& 14.471 cycles \\ \hline
+Procedure with 1 argument  & 2 cycles 	& 9 cycles  		& 11 cycles 	& 14.471 cycles \\ \hline
+Procedure with 2 argument  & 2 cycles 	& 10 cycles  		& 12 cycles 	& 14.455 cycles \\ \hline
+Procedure with 3 argument  & 2 cycles 	& 11 cycles 		& 13 cycles 	& 14.462 cycles \\ \hline
+Procedure with 4 argument  & 2 cycles 	& 12 cycles 		& 14 cycles 	& 14.461 cycles \\ \hline
+Procedure with 5 argument  & 2 cycles 	& 13 cycles 		& 15 cycles 	& 14.461 cycles \\ \hline
+Procedure with 6 argument  & 2 cycles 	& 14 cycles 		& 16 cycles 	& 14.456 cycles \\ \hline
+Procedure with 7 argument  & 2 cycles 	& 15 cycles 		& 17 cycles 	& 16.518 cycles \\ \hline\hline
+
+System call (1st run) & 200 cycles & 600 cycles & 800 cycles & 5000 cycles\\
+\hline
+System call (average) & 200 cycles & 600 cycles & 800 cycles & 750 cycles\\
+\hline\hline
+
+fork() process first time		& 20 cycles & 10000 cycles 	& 10000 cycles& 2257852 cycles \\ \hline
+fork() process average		& 20 cycles & 10000 cycles 	& 10000 cycles& 1198519.65 cycles \\ \hline
+thr\_create() thread first time	& 20 cycles & 8000 cycles		& 8000 cycles &  2273593 cycles \\ \hline
+thr\_create() thread 	average	& 20 cycles & 8000 cycles		& 8000 cycles &  157433.27 cycles \\ \hline\hline
+
+
+process context switch 	& 200 cycles		&	2000000 cycles	&2000000 cycles	& 2010805.721 cycles \\
+\hline
+thread context switch 	& 200 cycles		&	1500000 cycles	&1500000 cycles	& 1895295.586 cycles \\ 
+\hline
+pipe overhead			& 200 cycles		&	30000 cycles	&30000 cycles	& 45275.283 cycles \\ 
+\hline\hline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{tabular}
+\end{center}
+
+
+
+
+
+
+\caption{Summary table}
+
+\end{table}
+
