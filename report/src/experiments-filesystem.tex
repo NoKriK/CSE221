@@ -3,9 +3,6 @@
 
 \subsubsection{Size of file cache}
 
-// NOTE
-Note that this may be very sensitive to other load on the machine. Report results as a graph whose x-axis is the size of the file being accessed and the y-axis is the average read I/O time. Do not use a system call or utility program to determine this metric except to sanity check.
-// NOTE
 % Data and cmd line to change unit
 %
 %NoKriK-20:~ nokrik$ sed 's/MB//' /tmp/cacheperf  | awk '{ print $0, "Avg speed
@@ -106,7 +103,7 @@ needed to swap out other applications.
 The bandwidth is much lower than excepted. 
 
 \paragraph{Success of Methodology}
-
+The methodology seems to be efficient to determine the file system cache size.
 
 
 \subsubsection{File read time}
@@ -260,3 +257,5 @@ Operation & Hardware cost & Software cost & Prediction & Measured \\
 According to the result shown in \ref{tab:contention}, we
 
 \paragraph{Success of Methodology}
+
+

@@ -1,0 +1,70 @@
+Starting 1 processes...
+Sequential read of 128MB file = 30217705166.400002 cycles
+Starting 2 processes...
+Sequential read of 128MB file = 95988909.600000 cycles
+Sequential read of 128MB file = 17913964762.799999 cycles
+Starting 4 processes...
+Sequential read of 128MB file = 87821260.200000 cycles
+Sequential read of 128MB file = 104885328259.800003 cycles
+Sequential read of 128MB file = 106098428802.399994 cycles
+Sequential read of 128MB file = 109194726605.199997 cycles
+Starting 8 processes...
+Sequential read of 128MB file = 212785684597.200012 cycles
+Sequential read of 128MB file = 214588930840.399994 cycles
+Sequential read of 128MB file = 215386154981.200012 cycles
+Sequential read of 128MB file = 216120574675.399994 cycles
+Sequential read of 128MB file = 217889764291.600006 cycles
+Sequential read of 128MB file = 218489592725.200012 cycles
+Sequential read of 128MB file = 218968279257.799988 cycles
+Sequential read of 128MB file = 219433630949.000000 cycles
+Starting 16 processes...
+Sequential read of 128MB file = 393456292251.000000 cycles
+Sequential read of 128MB file = 401634902460.000000 cycles
+Sequential read of 128MB file = 404993491376.200012 cycles
+Sequential read of 128MB file = 405711262299.599976 cycles
+Sequential read of 128MB file = 406981524920.799988 cycles
+Sequential read of 128MB file = 407366645081.599976 cycles
+Sequential read of 128MB file = 408478359179.400024 cycles
+Sequential read of 128MB file = 410052516650.599976 cycles
+Sequential read of 128MB file = 411550638945.599976 cycles
+Sequential read of 128MB file = 412495180663.400024 cycles
+Sequential read of 128MB file = 413104992671.200012 cycles
+Sequential read of 128MB file = 413920227565.400024 cycles
+Sequential read of 128MB file = 414353031444.000000 cycles
+Sequential read of 128MB file = 415095580295.599976 cycles
+Sequential read of 128MB file = 415663611293.799988 cycles
+Sequential read of 128MB file = 416474757357.400024 cycles
+Starting 32 processes...
+Sequential read of 128MB file = 247911350783.399994 cycles
+Sequential read of 128MB file = 339670824776.200012 cycles
+Sequential read of 128MB file = 358766897255.200012 cycles
+Sequential read of 128MB file = 456327155897.400024 cycles
+Sequential read of 128MB file = 529946451325.599976 cycles
+Sequential read of 128MB file = 575742892339.000000 cycles
+Sequential read of 128MB file = 576025600489.400024 cycles
+Sequential read of 128MB file = 642844804037.599976 cycles
+Sequential read of 128MB file = 692249839612.599976 cycles
+Sequential read of 128MB file = 718130834957.199951 cycles
+Sequential read of 128MB file = 762608366447.400024 cycles
+^[^[kkkSequential read of 128MB file = 784380795808.599976 cycles
+Sequential read of 128MB file = 808924649963.199951 cycles
+Sequential read of 128MB file = 822985871679.000000 cycles
+Sequential read of 128MB file = 829108693063.199951 cycles
+Sequential read of 128MB file = 859337836764.000000 cycles
+Sequential read of 128MB file = 863085098736.400024 cycles
+Sequential read of 128MB file = 864062001443.800049 cycles
+Sequential read of 128MB file = 870334703929.400024 cycles
+Sequential read of 128MB file = 870383398351.400024 cycles
+Sequential read of 128MB file = 870414835265.199951 cycles
+Sequential read of 128MB file = 870997552052.199951 cycles
+Sequential read of 128MB file = 871337845545.599976 cycles
+Sequential read of 128MB file = 873176111304.800049 cycles
+Sequential read of 128MB file = 874247810356.800049 cycles
+Sequential read of 128MB file = 874986011871.000000 cycles
+Sequential read of 128MB file = 877570923132.800049 cycles
+Sequential read of 128MB file = 877790115808.599976 cycles
+Sequential read of 128MB file = 878320050534.400024 cycles
+Sequential read of 128MB file = 879258841850.400024 cycles
+Sequential read of 128MB file = 879493089519.000000 cycles
+Sequential read of 128MB file = 881842637798.199951 cycles
+

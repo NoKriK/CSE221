@@ -154,22 +154,19 @@ We then ran it 10,000 times to get an averaged result.
 
 \paragraph{Predictions}
 System call are expected to be more expensive than simple procedure call as they
-produce a context switch.
+need a mode transition.
 The state of the process need to be saved and a kernel thread must be launched.
 The way back need also to be done.
-We except something like 400 cycles for each context switch, so a total of about 800 cycles.
+We except something like 400 cycles for each mod transition switch, so a total of about 800 cycles.
 
 \paragraph{Results}
 \begin{table} [h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation 				& Hardware cost & Software cost & Prediction & Measured \\
-\hline
-System call (1st run) & 200 cycles & 600 cycles & 800 cycles & 5000 cycles\\
-\hline
-System call (average) & 200 cycles & 600 cycles & 800 cycles & 750 cycles\\
-\hline
+Operation 				& Hardware cost & Software cost & Prediction & Measured \\ \hline
+System call (1st run) & 200 cycles & 600 cycles & 800 cycles & 5000 cycles\\ \hline
+System call (average) & 200 cycles & 600 cycles & 800 cycles & 750 cycles\\ \hline
 \end{tabular}
 \end{center}
 
@@ -248,7 +245,7 @@ Operation & H/W cost & S/W cost & Prediction & Measured average & Measured first
 \hline
 fork() process 		& 5000 cycles & 10000 cycles 	& 15000 cycles& 1198519.65 cycles & 2257852 cycles\\ \hline
 thr\_create() thread 	& 100 cycles & 99000 cycles	& 10000 cycles &
-157433.27 cycles & 2233593 cycles\\ \hline
+197091.67 cycles & 2233593 cycles\\ \hline
 \end{tabular}
 \end{center}
 \caption{Task creation time\label{tab:task-creation}}
@@ -298,8 +295,11 @@ Similar to task creation time, we would expect to see a smaller cost
 for the thread context switching than for process context switching as the virtual
 address space doesn't need to be changed.
 Based on the task creation time we can see in table \ref{tab:task-creation},
-our prediction for process context switching is 200,000 clock
-cycles and for process context switching is 75,000 clock cycles.
+our prediction for process context switching is 30,000 clock
+cycles and for process context switching is 20,000 clock cycles.
+The cost will be high as the kernel scheduler code needs to be loaded into the
+data cache and to be run.
+
 
 Meanwhile, our prediction for the pipe overhead is 1000 clock cycles per syscall
 on the pipe.
@@ -312,19 +312,23 @@ for the complexity of the pipe.
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 Operation 		& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hline
-Process context switch 	& 		& 	&2000000 cycles	& 100540.28 cycles \\ \hline
-Thread context switch 	& 		&		&1500000 cycles	& 94764.77 cycles \\ \hline
-Pipe overhead		& 		&		&30000 cycles	& 45275.283 cycles \\ \hline
-\hline
+Process context switch 	& 5000 cycles	& 30000 cycles	& 150000 cycles	& 100540.28 cycles \\ \hline
+Thread context switch 	& 2000 cycles	& 20000 cycles	& 75000 cycles	& 94764.77 cycles \\ \hline
+Pipe overhead		& 200 cycles	& 800 cylces	& 1000 cycles	& 2263.07 cycles \\ \hline
 \end{tabular}
 \end{center}
 
 \caption{Context switch time\label{tab:context-switch-time}}
 \end{table}
-As what we can see in table \ref{tab:context-switch-time}, same as what we expected, the time it takes for context switching between threads is a lot shorter than the one for processes.
+
+The context switch time of a thread is relatively high.
+Globally
+We can see in table \ref{tab:context-switch-time}, that the
+time it takes to context switch between threads is a little bit shorter
+than the one for processes.
+This is due 
 
 \paragraph{Success of Methodology}
-We measured the context switching overhead for both processes and threads. The overhead of such context switching is going to be the time start from the creation of the child to the time execution gets back to the parent process/thread excluding the time for child to execute. We only tested the context switching within 2 different processes. Due to the lack of time, we were not measuring the context switching time among more than 2 processes. However, this is something good to measure in a real situation because it makes more sense to execute the program using the optimized number of threads in order to get ebst performance.
-
+Working set really small.
 
 

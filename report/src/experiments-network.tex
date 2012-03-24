@@ -1,3 +1,4 @@
+\newpage
 \subsection{Network}
 
 \subsubsection{Round trip time}
@@ -10,30 +11,64 @@ Evaluate for the TCP protocol. For each quantity, compare both remote and loopba
 We developped a basic tcp server which accept connections and sends back the
 data it receives.
 The tcp client connect to the server and does one write and one read of a message of
-the size of the Maximum Segment Size (MSS). The measuement time does not include the time it takes for open close socket operation, hand-shake and termination. The RTT we measured is exactly the time it takes for data to go through a round trip from the system to the remote host.
+the size of the Maximum Segment Size (MSS).
+The measurement time does not include the time it takes for the socket and
+connection operations.
+The RTT we measured is exactly the time it takes for data to go through a round trip from the system to the remote host.
 The operation is repeated 10,000 times and the result reported is the average.
 
 For the ICMP measure, we averaged the resulted on 1000 runs.
+We used the following command :
 \begin{verbatim}
-ping -n -s 127.0.0.1 56 1000
+ping -n -s 127.0.0.1 1400 1000
 \end{verbatim}
 
 The second machine is described in the Appendix \ref{sec:app-remotehost}.
 
 \paragraph{Predictions}
+
+The packet will produce at least 1 context switch on each equipment it goes
+through.
+A context switch on Solaris cost around 100,000 cycles, this
+is equivalent to 0.03 ms.
+We measured the context switch on Linux and the cost is in the same order.
+A vmexit or vmentry operation cost around 1000 cycles.
+The cost of transfering 1500 bytes of data at 100Mb/s is about 0.12ms.
+
 The cost of remote request will be high as the packet will travel through :
 \begin{enumerate}
-\item The Solaris OS
-\item The Xen hypervisor through an hypercall.
-The Xen hypervisor also does Network Address Translation (NAT)
-\item Two or more switches
-\item The ESXi hypervisor
-\item The linux guest OS
+\item The Solaris OS, producing a context switch to kernel land,
+\item The Xen hypervisor through an hypercall, producing a context switch in the
+hypervisor,
+The Xen hypervisor also does Network Address Translation (NAT), which may cost
+around 10,000 cycles,
+\item Two or more switches, they are embedding real time operating systems,
+but they still increase latency,
+\item The ESXi hypervisor through an interrupt on the network card, which
+produce a context switch to the ESXi kernel,
+\item The linux guest OS,
 \end{enumerate}
 
-We except an higher cost for TCP as the protocol is statefull and the packet
-will be checked against the state tables in the solaris and linux virtual
-machine but also on the Xen hypervisor (router/NAT). 
+As the ICMP requests are handled at the kernel level on the Linux side this will
+avoid two context switches.
+The TCP protocol is statefull and the packet will be checked against the state
+tables in the solaris and linux virtual machine but also on the Xen hypervisor
+(router/NAT) which could cause an higher cost.
+We don't except to see a real difference between the ICMP and the TCP request
+due to the number of unpredictable equipment the packet need to traverse.
+
+For the remote host, the minimal cost will be around 8 context switches (4 on
+each way).
+This is about 0.24 ms + the cost of the data transfer which is twice 0.12ms so a total of
+about 0.48ms.
+
+For the loopback interface we can estimate the cost to two context switchs for
+the ICMP packets and four context switchs for the TCP packets.
+The memory operation cost is negligable.
+This would respectivly make about 0.06ms and 0.12ms.
+
+
+
 
 \paragraph{Results}
 \begin{table}[h]
@@ -76,10 +111,12 @@ The client send as much data as he can by packet of the size of the MSS.
 We ran the test 100 time and averaged the result.
 
 \paragraph{Predictions}
-The slowest network switch is switching at theoritical speed of 100Mb/s.
+The slowest network switch is switching at the theoritical speed of 100Mb/s.
 We except the switch to be the bottleneck and to be able to handle only 90\% of
 the theoritical 100Mb/s.
-Thus we except
+
+For the loopback device, the bottleneck will be the bandwidth of the RAM.
+We except to avoid many context switches due to the two virtual cores.
 
 \paragraph{Results}
 \begin{table}[h]
@@ -98,33 +135,29 @@ Remote 	&  cycles		& 10			&  cycles	&  cycles \\
 \caption{Peak bandwidth\label{tab:peak-bandwidth}}
 \end{table}
 
-As seen in table \ref{tab:Peak bandwidth}
+As seen in table \ref{tab:peak-bandwidth}
 \paragraph{Success of Methodology}
 We may have written more data on the socket but it doesn't sound like the
 bottleneck ?
 
 
-
-
 \subsubsection{Connection overhead}
 \paragraph{Methodology}
+We basicly connected to the remote server and to the looppack device 100,000 times.
+
 \paragraph{Predictions}
+Due to the topology of the network and the number of equipment to traverse we
+except to connection overhead to be about 6-10 times higher for the remote server.
 \paragraph{Results}
 \begin{table} [h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cost & Software cost & Prediction & Measured \\
-\hline
-
-Local setup 	&  cycles		& 10			&  cycles	&  cycles \\
-\hline
-Remote setup	&  cycles		& 10			&  cycles	&  cycles \\
-\hline
-Local tear-down 	&  cycles		& 10			&  cycles	&  cycles \\
-\hline
-Remote tear-down	&  cycles		& 10			&  cycles	&  cycles \\
-\hline
+Operation & Hardware cost & Software cost & Prediction & Measured \\ \hline
+Local setup 	&  cycles		& 10			&  cycles	&  cycles \\ \hline
+Remote setup	&  cycles		& 10			&  cycles	&  cycles \\ \hline
+Local tear-down 	&  cycles		& 10			&  cycles	&  cycles \\ \hline
+Remote tear-down	&  cycles		& 10			&  cycles	&  cycles \\ \hline
 
 
 \end{tabular}
