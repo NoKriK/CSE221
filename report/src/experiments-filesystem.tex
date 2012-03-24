@@ -108,10 +108,6 @@ The methodology seems to be efficient to determine the file system cache size.
 
 \subsubsection{File read time}
 
-//NOTE
-Report for both sequential and random access as a function of file size. Discuss the sense in which your "sequential" access might not be sequential. Ensure that you are not measuring cached data (e.g., use the raw device interface). Report as a graph with a log/log plot with the x-axis the size of the file and y-axis the average per-block time.
-//NOTE
-
 \paragraph{Methodology}
 Solaris has a library function called \emph{directio} which is supposed to
 enable filesystem cache bypassing.
@@ -127,7 +123,7 @@ file and we used the \emph{lseek} system call to move to the position in the fil
 
 The read are read of 128KB as ZFS is dynamicly adjusting the block size up to
 128KB and our files are big.
-We also took care of reading on 128KB aligned values.
+We also took care of reading on 128KB aligned offsets.
 
 \paragraph{Predictions}
 The sequential access are usually not really sequential depending of the
@@ -142,9 +138,11 @@ The random access patern will directly show the latency of the disk.
 The average access time of the disk is 18ms.
 The locality should still be better than a total random read so the average
 latency should be lower than this.
-As the average access time is about 18ms, the disk should be able to handle
-about 55 random IOPS.
-In our test program, each read is 2048 bits, the worst result should be about 110 kB/s.
+The average access time is about 18ms, as the data are not spread about the
+whole disk we except to have a better locality and a smaller average access
+time.
+The big block size we also reduce the number of operations needed to read the
+size of the file randomly.
 
 \paragraph{Results}
 %Random read of 16MB file = 9102361.100000 cycles
@@ -153,15 +151,15 @@ In our test program, each read is 2048 bits, the worst result should be about 11
 %Sequential read of 32MB file = 606507661.600000 cycles
 %Random read of 64MB file = 2293530695.800000 cycles
 %Sequential read of 64MB file = 741881983.400000 cycles
-%Random read of 128MB file = 30348566418.200001 cycles
+%Random read of 128MB file =     30348566418.200001 cycles
 %Sequential read of 128MB file = 23236454763.200001 cycles
-%Random read of 256MB file = 67326707225.199997 cycles
+%Random read of 256MB file =     67326707225.199997 cycles
 %Sequential read of 256MB file = 52155449247.800003 cycles
-%Random read of 512MB file = 140054964368.500000 cycles
+%Random read of 512MB file =     140054964368.500000 cycles
 %Sequential read of 512MB file = 117432073012.600006 cycles
-%Random read of 1024MB file = 283541448595.400024 cycles
+%Random read of 1024MB file =     283541448595.400024 cycles
 %Sequential read of 1024MB file = 235781376980.299988 cycles
-%Random read of 2048MB file = 583294034447.000000 cycles
+%Random read of 2048MB file =     583294034447.000000 cycles
 %Sequential read of 2048MB file = 477223504150.000000 cycles
 
 \begin{table}[h]
@@ -203,15 +201,6 @@ Read file size & Hardware cost & Software cost & Prediction & Measured \\ \hline
 256MB Remote Sequential	& ?		& ?       & ?        & 0.019    ms/block \\ \hline
 512MB Remote Sequential	& ?		& ?       & ?        & 4.919    ms/block \\ \hline
 1024MB Remote Sequential	& ?		& ?       & ?        & 8.725    ms/block \\ \hline\hline 
-
-
-
-
-
-
-
-
-
 \hline
 \end{tabular}
 \end{center}
@@ -223,18 +212,17 @@ Read file size & Hardware cost & Software cost & Prediction & Measured \\ \hline
 \includegraphics[scale=0.8]{fileAccessImage}
 \end{center}
 \caption {File read time\label{fig:file-access}}
-
 \end{figure}
 
 
-According to the result shown in table \ref{tab:file-read-time} and figure \ref{fig:file-access}, we
+According to the result shown in table \ref{tab:file-read-time} and figure
+\ref{fig:file-access}, we have a problem.
 
 
 \paragraph{Success of Methodology}
 We wern't able to measure the performance for small files as ZFS doesn't support
 direct i/o and we couldn't reduce the cache so that the small files doesn't fit
 into the cache.
-
 
 
 
@@ -254,9 +242,9 @@ Otherwise, we used the same methodology as in the previous section.
 The small files are probably going to benefit from cache on client or server
 side.
 The performances will anyway suffer from the network bottleneck.
-For the big files we except to have the same performances as on the solaris
-server as the network should not be a bottleneck and the OS should be fast
-enough to handle the data.
+For the big files we except to suffer from the the network bottleneck and the
+which is running a 10.56MB/s as seen before.
+It implies a minimum latency of 13 ms per block.
 
 \paragraph{Results}
 

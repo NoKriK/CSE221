@@ -105,29 +105,41 @@ As seen in table \ref{tab:rtt}
 \subsubsection{Peak bandwidth}
 \paragraph{Methodology}
 We measured the time elapsed when transfering 2GB of data.
-We developped a tcp server which just drops the packet he receives.
+The remote tcp server just drops the packet it receives.
 The client send as much data as he can by packet of the size of the MSS.
 
-We ran the test 100 time and averaged the result.
+We ran the test 1000 times for the loopback, 5 times for the remote bandwidth
+and reported the averaged result.
 
 \paragraph{Predictions}
 The slowest network switch is switching at the theoritical speed of 100Mb/s.
 We except the switch to be the bottleneck and to be able to handle only 90\% of
-the theoritical 100Mb/s.
+the theoritical 100Mb/s so 11.25MB/s.
+The overhead of TCP/IP is about 1/
 
 For the loopback device, the bottleneck will be the bandwidth of the RAM.
-We except to avoid many context switches due to the two virtual cores.
+The data needs to be copied in the kernel buffers on client request, read from
+the buffer kernel and written to the userland buffer on the server side.
+This gives us two read and two write operation and a theoritical bandwith of
+about 2161MB/s.
+Thus we count one mode switch overhead (1000 cycles) per read/write which gives
+us an overhead of 23 ms per GB transferred (about 760,000 syscalls).
+On a single core we would have accounted for two mode switch but the two virtual
+cores may help the data processing parallalization.
+The resulting estimated bandwidth is 1455 MB/s.
 
 \paragraph{Results}
+% loopbach = 5971829937 cycles or 1132MB/s
+% remote = 640049329512 cycles or 10.56MB/s
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cost & Software cost & Prediction & Measured \\
+Operation & Hardware performance & Software penality & Prediction & Measured \\
 \hline
-Local 	&  cycles		& 10			&  cycles	&  cycles \\
+Local 	&  2161 MB/s	& 23 ms/GB	&  1455 MB/s &  1132MB/s \\
 \hline
-Remote 	&  cycles		& 10			&  cycles	&  cycles \\
+Remote 	&  11.25 MB/s	& 0 &  11.25MB/s	&  10.56MB/s \\
 \hline
 
 \end{tabular}
@@ -137,7 +149,8 @@ Remote 	&  cycles		& 10			&  cycles	&  cycles \\
 
 As seen in table \ref{tab:peak-bandwidth}
 \paragraph{Success of Methodology}
-We may have written more data on the socket but it doesn't sound like the
+To improve the result on the loopback interface, one solution would have been to
+increase the buffer size We may have written more data on the socket but it doesn't sound like the
 bottleneck ?
 
 
@@ -149,6 +162,8 @@ We basicly connected to the remote server and to the looppack device 100,000 tim
 Due to the topology of the network and the number of equipment to traverse we
 except to connection overhead to be about 6-10 times higher for the remote server.
 \paragraph{Results}
+%Connection avg time : 32667528
+%Close avg time : 45015
 \begin{table} [h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
@@ -158,6 +173,7 @@ Local setup 	&  cycles		& 10			&  cycles	&  cycles \\ \hline
 Remote setup	&  cycles		& 10			&  cycles	&  cycles \\ \hline
 Local tear-down 	&  cycles		& 10			&  cycles	&  cycles \\ \hline
 Remote tear-down	&  cycles		& 10			&  cycles	&  cycles \\ \hline
+
 
 
 \end{tabular}
