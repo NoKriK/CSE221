@@ -105,5 +105,6 @@ void	tcpbandwidthClient(char **arg);
 void	tcpconnectClient(char **arg);
 void	fsCacheSize(char **arg);
 void	readFile(char **arg);
+void	readContention(char **arg);
 
 #endif /* !SYSMEASURETOOL_H_ */

@@ -7,6 +7,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <wait.h>
 #ifdef __linux
 # include <time.h>
 #endif
@@ -16,6 +17,8 @@
 #define GAPSIZE		(1 << 27)
 #define MAXFSIZE	(1 << 31)
 #define MINFSIZE	(1 << 24)
+#define CONTSIZE	(1 << 27)
+#define CONTPROC	(1 << 5)
 #define BUFSIZE		2048
 
 #define FILEBUFSIZE	(128 * 1024)
@@ -144,4 +147,75 @@ void			readFile(char **arg)
 	}
 	if (unlink(filename) == -1)
 		perror("File remove failed");
+}
+
+void			readContention(char **arg)
+{
+	char		*filenametpl = "./tmpReadContentionBenchXXXXXX";
+	char		*filename[CONTPROC];
+	char		buf[FILEBUFSIZE];
+	int		fd[CONTPROC];
+	int		res;
+	unsigned int	i;
+	unsigned int	j;
+	unsigned int	size;
+
+	memset(buf, 42, FILEBUFSIZE);
+	for (i = 0; i < CONTPROC; i++)
+	{
+		filename[i] = strdup(filenametpl);
+		if ((fd[i] = mkstemp(filename[i])) == -1)
+		{
+			perror("File creation failed");
+			exit(1);
+		}
+		for (size = 0; size < CONTSIZE; size += res)
+			if ((res = write(fd[i], buf, FILEBUFSIZE)) == -1)
+			{
+				perror("Write error");
+				exit(1);
+			}
+		printf("Temporary file %s created.\n", filename[i]);
+	}
+	for (i = 1; i <= CONTPROC; i = i << 1)
+	{
+		printf("Starting %d processes...\n", i);
+		for (j = 0; j < i; j++)
+		{
+			if (!(res = fork()))
+			{
+				MEASUREOUTLOOP(0,
+					if (lseek(fd[j], 0, SEEK_SET) == -1)
+					{
+						perror("Lseek error");
+						exit(1);
+					}
+					do
+					{
+						if ((res = read(fd[j], buf, FILEBUFSIZE)) == -1)
+						{
+							perror("Read error");
+							exit(1);
+						}
+					}
+					while (res)
+				)
+				printf("Sequential read of %dMB file = %f cycles\n", CONTSIZE / (1024 * 1024),
+					gl_lastavgres);
+				free(filename[j]);
+				return;
+			}
+			else if (res == -1)
+				perror("fork");
+		}
+		for (j = 0; j < i; j++)
+			waitid(P_ALL, 0, NULL, WEXITED);
+	}
+	for (i = 0; i < CONTPROC; i++)
+	{
+		close(fd[i]);
+		if (unlink(filename[i]) == -1)
+			perror("File remove failed");
+		free(filename[j]);
+	}
 }
