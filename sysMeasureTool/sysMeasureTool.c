@@ -252,6 +252,7 @@ static const t_measures	gl_funcs[] = {
 	{ "tcpconnectClient", tcpconnectClient },
 	{ "fsCacheSize", fsCacheSize },
 	{ "readFile", readFile },
+	{ "readContention", readContention },
 };
 
 static void 	displayUsage(void)
