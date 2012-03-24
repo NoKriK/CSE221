@@ -1,3 +1,4 @@
+\newpage
 \subsection{File System}
 
 \subsubsection{Size of file cache}
@@ -110,15 +111,36 @@ Report for both sequential and random access as a function of file size. Discuss
 Solaris has a library function called \emph{directio} which is supposed to
 enable filesystem cache bypassing.
 The function is not supported with ZFS so we were forced to reduce the
-filesystem cache size manually with the \emph{mdb} command\ref{zfs-evil-tuning}.
-We reduced the cache to 32MB.
+filesystem cache size manually with the \emph{mdb} command\cite{zfs-evil-tuning}.
+We couldn't reduce the cache lower than 64MB as ZFS doesn't allow
+it\cite{zfs-arc-max}.
 
-We then created a file of 64MB and read it 10 times sequentially and read the
+We then created a file of 2MB and read it 10 times sequentially and read the
 size of the file randomly 10 times.
-For the random read, we use the urandom function to generate an offset in the
-file and we use the lseek system call to move to the position in the file.
+For the random read, we used the urandom function to generate an offset in the
+file and we used the \emph{lseek} system call to move to the position in the file.
+
+The read are read of 128KB as ZFS is dynamicly adjusting the block size up to
+128KB and our files are big.
+We also took care of reading on 128KB aligned values.
 
 \paragraph{Predictions}
+The sequential access are usually not really sequential depending of the
+fragmentation of the file system.
+We except to reach 90\% of the bandwidth of the disk on sequential reads
+and a low disk latency.
+The file are newly written files and the partition is not full so the filesystem
+should not be much fragmented.
+
+For the random file read time, we except a higher latency per block access.
+The random access patern will directly show the latency of the disk.
+The average access time of the disk is 18ms.
+The locality should still be better than a total random read so the average
+latency should be lower than this.
+As the average access time is about 18ms, the disk should be able to handle
+about 55 random IOPS.
+In our test program, each read is 2048 bits, the worst result should be about 110 kB/s.
+
 \paragraph{Results}
 \begin{table}[h]
 \begin{center}
@@ -135,6 +157,9 @@ According to the result shown in \ref{tab:file-read-time}, we
 
 
 \paragraph{Success of Methodology}
+We wern't able to measure the performance for small files as ZFS doesn't support
+direct i/o and we couldn't reduce the cache so that the small files doesn't fit
+into the cache.
 
 
 
