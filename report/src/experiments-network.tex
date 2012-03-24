@@ -3,9 +3,9 @@
 
 \subsubsection{Round trip time}
 
-//NOTE: following is the guide line
-Evaluate for the TCP protocol. For each quantity, compare both remote and loopback interfaces. Comparing the remote and loopback results, what can you deduce about baseline network performance and the overhead of OS software? For both round trip time and bandwidth, how close to ideal hardware performance do you achieve? In describing your methodology for the remote case, either provide a machine description for the second machine (as above), or use two identical machines.
-//NOTE: above is the guide line
+%//NOTE: following is the guide line
+%Evaluate for the TCP protocol. For each quantity, compare both remote and loopback interfaces. Comparing the remote and loopback results, what can you deduce about baseline network performance and the overhead of OS software? For both round trip time and bandwidth, how close to ideal hardware performance do you achieve? In describing your methodology for the remote case, either provide a machine description for the second machine (as above), or use two identical machines.
+%//NOTE: above is the guide line
 
 \paragraph{Methodology}
 We developped a basic tcp server which accept connections and sends back the
@@ -17,16 +17,15 @@ connection operations.
 The RTT we measured is exactly the time it takes for data to go through a round trip from the system to the remote host.
 The operation is repeated 10,000 times and the result reported is the average.
 
-For the ICMP measure, we averaged the resulted on 1000 runs.
+For the ICMP measure, we averaged the resulted on 100 runs.
 We used the following command :
 \begin{verbatim}
-ping -n -s 127.0.0.1 1400 1000
+ping -n -s 127.0.0.1 1400 100
 \end{verbatim}
 
 The second machine is described in the Appendix \ref{sec:app-remotehost}.
 
 \paragraph{Predictions}
-
 The packet will produce at least 1 context switch on each equipment it goes
 through.
 A context switch on Solaris cost around 100,000 cycles, this
@@ -71,20 +70,18 @@ This would respectivly make about 0.06ms and 0.12ms.
 
 
 \paragraph{Results}
+% remote tcp : 4146300.853200 cycles 1.26ms
+% local tcp : 214142.5357 cycles 65 us
+
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation 			& Hardware cost 	& Software cost 		& Prediction 		& Measured \\
-\hline
-Local ICMP rtt		&				&					&				& 		\\
-\hline
-Remote ICMP rtt		&				&					&				& 		\\
-\hline
-Local TCP rtt		&				&					&				& 		\\
-\hline
-Remote TCP rtt		&				&					&				& 		\\
-\hline
+Operation 		& Hardware cost 	& Software cost 	& Prediction 		& Measured \\ \hline
+Local ICMP rtt		&			&			&			& 		\\ \hline
+Remote ICMP rtt		&			&			&			& 		\\ \hline
+Local TCP rtt		&		& 	&		& 65 $\mu$s\\ \hline
+Remote TCP rtt		&			&			& & 1.26 ms	\\ \hline
 
 
 \end{tabular}

@@ -259,10 +259,14 @@ Operation & Hardware cost & Software cost & Prediction & Measured \\
 \caption{Remote file read time\label{tab:remote-file-access}}
 \end{table}
 
-According to the result shown in \ref{tab:remote-file-access}, we
-As excepted the slow benefit from client side cache.
-\paragraph{Success of Methodology}
+Our result presented in the table \ref{tab:remote-file-access} seems to only
+show the client side cache performance.
+All the result except the big random read are lower than what the network card
+permits.
 
+\paragraph{Success of Methodology}
+We should have repeated the experiment by desactivating the cache on the client
+side but we didn't due to lack of time.
 
 
 \subsubsection{Contention}
@@ -271,8 +275,18 @@ Report the average time to read one file system block of data as a function of t
 //NOTE
 
 \paragraph{Methodology}
+We created 32 files of 128MB (bigger than the minimum filesystem cache size of
+solaris).
+We then launched processes which were reading these files sequentially and
+simultaneously.
+We did the experiment with 1, 2, 4, 8, 16 and 32 processes as our disk was too
+small to experiment with more files.
+
+Each process was reading a given file 5 times and we averaged the result.
 
 \paragraph{Predictions}
+
+
 \paragraph{Results}
 \begin{table}
 \begin{center}
