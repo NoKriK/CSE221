@@ -25,13 +25,10 @@ and a binary OR on the two variables.
 As the cache may be hited, it's basicly two cache write, around 10 cycles, and
 the cost of the second rdtsc call.\\
 
-As all optimization are turned off, the cost of a loop iteration is basicly a
-load from memory, an incrementation, a store to memory, a comparaison and a
-jump.
-The cache will probably be hited, thus the cost of memory operations will be low.
-The total cost may be around 15 cycles if we count 10 cycles for the memory
-latency and 1 cycle for operation such as incremention, comparaison and
-jump.\\
+As the loop optimization is turned on, the cost of a loop iteration is basicly a
+an incrementation in a register, a comparaison and a jump.
+The total cost may be around 3 cycles if we count 1 cycle per operation such as
+incremention, comparaison and jump.\\
 
 There is no software overhead in any of these operations.
 
@@ -41,15 +38,16 @@ There is no software overhead in any of these operations.
 \begin{tabular}{| l | l | l | l | l |} \hline
 Operation 			& Hardware cost 	& Software cost 	& Prediction	& Measured \\ \hline
 Reading the clock 	& 25 cycles		& 0 cycles			& 25 cycles 	& 58.555 cycles \\ \hline
-Loop 				& 15 cycles 		& 0 cycles 		& 15 cycles 	& 12.487 cycles \\ \hline
+Loop 				& 2 cycles 		& 0 cycles & 2 cycles 	& 0.517 cycles \\ \hline
 \end{tabular}
 \end{center}
 \caption{Measurement overhead\label{tab:measurement-overhead}}
 
 \end{table}
 
-As seen in table \ref{tab:measurement-overhead}, our estimates are too low for the reading time compared to the actual result. The reason of that is the cost of the memory write operation is
-higher than excepted. It seems that we fill the cache latency due to the dependency of the data avoiding the effective use of the pipelining.
+As seen in table \ref{tab:measurement-overhead}, our estimates are too low for the reading time compared to the actual result.
+The reason may be that the cost of the memory write operation is higher than excepted.
+It seems that we feel the cache latency due to the dependency of the data avoiding the effective use of the pipelining.
 This hypothesis on the memory write operation cost is due to the fact that on long run,
 the result is lowered to aproximatly 30 cycles after 50,000 iterations.
 We choosed to report the average of a run which did not show this reduction in
@@ -59,11 +57,12 @@ loop).\\
 Our estimates are in the good range for the loop.
 
 \paragraph{Success of Methodology}
-Our result for the reading time are varying but we have an average result. As
-the overhead will be accounted only once for many iterations, this will not
+Our result for the reading time of the clock are varying but we have a good average result.
+As the overhead will be accounted only once for many iterations, this will not
 cause more problem.\\
 
-The result for the loop overhead seems accurate.
+The result for the loop overhead seems accurate and the optimizations seem
+efficient.
 
 \subsubsection{Procedure call overhead}
 \paragraph{Methodology}
@@ -89,7 +88,7 @@ The procedure call should normally be predicted by the branch prediction part of
 the processor avoiding stall of the processor.
 The architecture of the Intel Sandy Bridge is very complex, making prediction is
 really difficult.
-We can guess that the procedure call will take about 10 cycle and that each
+We can guess that the procedure call will take about 10 cycles and that each
 argument will cause a cost of one cycle due to the new register access.
 
 \paragraph{Results}
@@ -119,16 +118,30 @@ argument will cause a cost of one cycle due to the new register access.
 \caption{Procedure calls\label{fig:procCallf}}
 \end{figure}
 
-
-
-
-As what we can see in figure \ref{fig:procCallf} and table \ref{tab:procCall}, The results are low as predicted. Apparently the cost of accessing one more argument is too low to be detected. Only when the function take 7 aguments, which cannot all fit into the registers. The 7th argument is put into the stack and the cost for doing that turns out to be about 2 cycles.
+As what we can see in figure \ref{fig:procCallf} and table \ref{tab:procCall}, the results are low as predicted.
+Apparently the cost of accessing one more register is too low to be detected.
+The result is changing only when the function take 7 aguments, because the last
+one is not put into a register.
+The 7th argument is put into the stack and the cost for doing that turns out to
+be about 2 cycles (cache hit).
 
 \paragraph{Success of Methodology}
-The way we used for testing procedure call is quite successful. At first, we tried to use a function sums up the parameters it takes in. As a result, the running time for procedures with different number of arguments are different. However,that is mainly because of the fact more add operations are preformed in that case. After we changed the functions to be a int type always return 1, we got result shown in figure \ref{fig:procCallf}. At first we were really confused about it, later we realized that not all of the arguments are put on to the stack on x86-64 CPUs.
+The methodology we used for testing procedure call is quite successful.
 
+At first, we tried to use a function which sums up the parameters it takes to
+avoid compiler optimization.
+As a result, the running time for procedures gave different number dependent of
+the number of arguments.
+However, this is mainly due to the number of add operations which preformed in that case.
+We then found a trick (using \emph{asm("");}) to avoid compiler optimization.
 
-
+At the beginning we also had a result increasing due to the fact that gcc was
+compiling in 32 bits mode.
+In 32 bits, the calling convention is different and the arguments are passed
+through the stack.
+Afterall, we got result shown in figure \ref{fig:procCallf}.
+At first we were really confused about it, later we realized that not all of
+the arguments are put on to the stack on x86-64 CPUs.
 
 
 
@@ -164,31 +177,66 @@ System call (average) & 200 cycles & 600 cycles & 800 cycles & 750 cycles\\
 \end{table}
 
 
-As what we can see in table \ref{tab:sysCall}, The first call is always slow, due to the need to read kernel code and
-kernel memory which are not in cache. As we discussed ealier, the fact we are using virtual machine is giving us a worse performance on TLB misses. The first system call or procedure call will always experience a TLB miss.
+As what we can see in table \ref{tab:sysCall}, the first call is always slow,
+due to the need to read kernel code and kernel memory which are not in cache.
+As we discussed ealier, the fact we are using virtual machine is giving us worse
+performances on TLB misses.
+The first system call may experience a TLB miss.
 The following calls are going faster probably due to branch prediction and
 cache.
 
 \paragraph{Success of Methodology}
-We can see that system calls are much expensiver than procedure calls as excepted. Here is the reasons, first of all, system call by itself is a normal procedure call, it need to do everything a procedure call need to do. Secondly, the system call need more time for loading function and switching to the kernel mode. The way we used for measuring system and procedure calls are really successful.
+We can see that system calls are much expensiver than procedure calls as excepted.
+First of all, system call by itself is a normal procedure call, it need to do everything a procedure call need to do.
+Secondly, the system call need more time for loading function and switching to the kernel mode.
+The way we did our measurement seems to be successful.
+
+
 
 \subsubsection{Task creation time}
 \paragraph{Methodology}
-We measured the time to create process and thread seperately. After that, we compared them to each other to verify our measurement. When a new process is created, the page tables and stack frame are copied. While for creating a kernel thread, less information are required to get copied because of the fact that a lot of the resource in thread are shared with the main thread.
-We used the system call fork() for creating a new process and record the number of cycles from before the fork() is called to the point waitid() get back from the new process. And for the newly created process, we called \_exit() to immediated exit after creation.
-Similarly, we used the solaris implementation, which is thr\_create() for cloning thread. At first we used pthread\_create() fuction for thread creation operation. We replaced it with thr\_create() later because it is not meant for Solaris system, which is not as accurate when we are doing the measurement of the whole Solaris OS. Right after the creation of the thread, we used thr\_join() to wait for the termination of itself.
-At the same time, we measured the time for the program to create process and threads for the first time only as well, for loading the functions we used in this measurement into the cache.
+We measured the time to create process and thread seperately and
+compared the results to verify our measurement.
+
+For thread and process creation we waited until the newly created thread/process
+finishes for each measurement.
+We did this because otherwise the kernel could be lazy and create part of
+the information later.
+Thus our measurement include two context switches and one other syscall.
+We used the system call fork() to create a new process.
+The number of cycles is recorded before the fork() is called and after the waitid()
+returns meaning that the new process has exited.
+For the newly created process, we called \_exit() to immediately exit after creation.
+
+Similarly, for the thread, we used the native solaris implementation,
+which is thr\_create() to create threads.
+At first we used the pthread library for thread creation operation.
+We replaced it with thr\_create() later because it is not a native Solaris
+implementation, which is not as accurate when we are doing the measurement
+of the whole Solaris OS.
+Right after the creation of the thread, we used thr\_join() to wait for the
+termination of the new created thread.
+
+We also measured the time for the program to create the first process and the
+first threads.
+It shows the time needed to load the functions we used in this measurement into the cache.
+
 The creation overhead has been measured with 100,000 iterations.
-
-
 
 \paragraph{Predictions}
 
-As mentioned earlier, the thread has less data to copy than process do. Meanwhile, the process creation is using system call instead of function call, which envolves two context switching time. We predict that process creation is about 10000 cycles taking longer than thread creation 8000 cycles.
+When a new process is created, all the page table entries of the process virtual
+memory need to be copied.
+On a new process creation, the kernel needs also to duplicate the information
+regarding the open files and other kernel tables.
 
+When we create a kernel thread, less information are copied because all the
+resources of a thread except the stack are shared with the main thread.
 
+As mentioned earlier, the thread has less data to copy than process do.
 
-
+We think that process creation may take about 15000 cycles and that a thread
+creation may take 10000 cycles.
 
 
 \paragraph{Results}
@@ -198,8 +246,9 @@ As mentioned earlier, the thread has less data to copy than process do. Meanwhil
 \hline
 Operation & H/W cost & S/W cost & Prediction & Measured average & Measured first creation \\
 \hline
-fork() process 		& 20 cycles & 10000 cycles 	& 10000 cycles& 1198519.65 cycles & 2257852 cycles\\ \hline
-thr\_create() thread 	& 20 cycles & 8000 cycles		& 8000 cycles &  157433.27 cycles & 2273593 cycles\\ \hline
+fork() process 		& 5000 cycles & 10000 cycles 	& 15000 cycles& 1198519.65 cycles & 2257852 cycles\\ \hline
+thr\_create() thread 	& 100 cycles & 99000 cycles	& 10000 cycles &
+157433.27 cycles & 2233593 cycles\\ \hline
 \end{tabular}
 \end{center}
 \caption{Task creation time\label{tab:task-creation}}
@@ -207,39 +256,65 @@ thr\_create() thread 	& 20 cycles & 8000 cycles		& 8000 cycles &  157433.27 cycl
 \end{table}
 
 As seen in table \ref{tab:task-creation}, the measurement result mostly fits our prediction besides the fact that the number of cycles are way bigger than what we expected.
+This difference is probably cause by the cost of the memory operations
+
 \paragraph{Success of Methodology}
-For testing the overhead of creating a new process, we simply called fork(). It turned out that it takes about 750,000 clock cycles for creating it without caching and less than 500,000 with caching.While for the overhead of creating a new thread, we simply called pthread\_creat(). It turned out that it takes about 2000,000 clock cycles for creating it without caching and less than 80,000 with caching.
-The fact thread creation without caching is taking way longer time than the one for process creation doesn't really make sense to us right now, and we will look into that later as the project goes. But considering that thread creation does't envolve memory alloction, the average case for thread creation is generally faster then the one for process creation.
+One problem with our methodoly is that it includes creation and destruction of
+the process/thread.
+This idea is actually comming from the lmbench paper and it seems to make sense.
+Our result successfully show the cost of creating a new process instead of a
+thread.
 
 
 \subsubsection{Context switch time}
 \paragraph{Methodology}
 
-We measured the context switching time for both processes and threads. We used pipes in order to measure them. However, becasue of the fact that pipes have quite a big overhead by itself. We measured it seperately at the same time. Pipe would force a context switch into kernel mode when they are reading or writing. Similar to the previous task creation measurement, we used fork() and thr\_create() for creating new process and threads. The main/parent process waits to read from pipe where the child process or thread is writing to. 
+We measured the context switching time for both processes and threads.
+The methodology originally comes from the paper \emph{lmbench: Portable Tools for Performance
+Analysis}.
+We used pipes in order to measure these values.
+However, pipes creates an overhead by themself.
+We measured the pipe overhead seperately.
+As the other thread/process is waiting to read, writting into the pipe is
+forcing a context switch to kernel mode and allow the kernel to unlock the
+waiting process.
+We only wrote an integer to avoid increasing the overhead.
 
+Similar to the previous task creation measurement, we used fork() and
+thr\_create() to create new process and threads.
+The threads/processes are arranged into a circle created with pipes.
+Each thread/process is doing a blocking read on a pipe connected to the previous
+thread and a write on a pipe connected to next thread in an infinite loop.
+The thread/process is composed of 20 pipes/processes/thred.
 
-
-
+The measurement is run 10,000 times to average the result.
+The overhead of the pipe is removed in the final result.
 
 \paragraph{Predictions}
-Similar to task creation time, we would expect to see a smaller amount of time for thread context switching than process context switching. Based on the tasked creation time we can see in table \ref{tab:task-creation}, our prediction for process context switching is 2,000,000 clock cycles and for process context switching is 1,500,000 clock cycles. Meanwhile, our prediction for the pipe overhead is 30000 clock cycles.
+%FIXME
+Based on the previous results, we can define an upper bound for the cost of a
+context switch which is half of the cost of a creation of the task type.
+Similar to task creation time, we would expect to see a smaller cost
+for the thread context switching than for process context switching as the virtual
+address space doesn't need to be changed.
+Based on the task creation time we can see in table \ref{tab:task-creation},
+our prediction for process context switching is 200,000 clock
+cycles and for process context switching is 75,000 clock cycles.
 
-
+Meanwhile, our prediction for the pipe overhead is 1000 clock cycles per syscall
+on the pipe.
+We base this estimation on the cost of a minimal syscall and we add an overhead
+for the complexity of the pipe.
 
 \paragraph{Results}
 \begin{table}
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-
-Operation 				& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hline
-
-process context switch 	& 200 cycles		&	2000000 cycles	&2000000 cycles	& 2010805.721 cycles \\
-\hline
-thread context switch 	& 200 cycles		&	1500000 cycles	&1500000 cycles	& 1895295.586 cycles \\ 
-\hline
-pipe overhead			& 200 cycles		&	30000 cycles	&30000 cycles	& 45275.283 cycles \\ 
-\hline
+Operation 		& Hardware cost 	& Software cost 	& Prediction 	& Measured \\ \hline
+Process context switch 	& 		& 	&2000000 cycles	& 100540.28 cycles \\ \hline
+Thread context switch 	& 		&		&1500000 cycles	& 94764.77 cycles \\ \hline
+Pipe overhead		& 		&		&30000 cycles	& 45275.283 cycles \\ \hline
 \hline
 \end{tabular}
 \end{center}

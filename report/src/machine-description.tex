@@ -10,7 +10,7 @@ The processor integrates the memory controller.
 
 Detailled characteristics of the hardware processor :
 \begin{description}
-\item[CPU clock frequency] 3300.152 Mhz
+\item[Clock frequency] 3300.152 Mhz
 \item[L1 cache] 64 KB
 \begin{description}
 \item[Data cache] 32 KB
@@ -79,13 +79,14 @@ Again performance are triggered down by the worst disk model.
 Without any overload and in a perfect situation, the performance of sequential
 write would be two times the bandwith of the worst disk.
 
-\subsubsection{Performance penality}
+%\subsubsection{Performance penality}
 %FIXME
 
 \subsection{Network}
 The network card is integrated to the moterboard. It's an \emph{Intel® 82579LM Gigabit
 Ethernet Controller} which is a gigabit ethernet controller.
 The server is connected to a switch which port are running at 100 mb/s.
+The network is routed by the hypervisor.
 
 \subsection{Operating System}
 The operating system is Solaris 11.
