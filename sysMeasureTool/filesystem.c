@@ -7,6 +7,9 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#ifdef __linux
+# include <time.h>
+#endif
 #include "sysMeasureTool.h"
 
 #define FSMAXSIZE	((unsigned int)(1 << 30) * 2)
@@ -19,21 +22,20 @@
 
 void			fsCacheSize(char **arg)
 {
-	const char	*filename;
+	char		filename[] = "./fileCacheBenchXXXXXX";
 	unsigned int	targetsize = 0;
 	unsigned int	cursize = 0;
 	int		fd;
 	char		buf[BUFSIZE];
 	int		res;
 
-	filename = tmpnam(NULL);
-	printf("Temporary file name is %s\n", filename);
 	memset(buf, 42, BUFSIZE);
-	if ((fd = open(filename, O_CREAT | O_TRUNC | O_RDWR)) == -1)
+	if ((fd = mkstemp(filename)) == -1)
 	{
 		perror("File creation failed");
 		exit(1);
 	}
+	printf("Temporary file name is %s\n", filename);
 	for (targetsize = GAPSIZE; targetsize < FSMAXSIZE; targetsize += GAPSIZE)
 	{
 		while (cursize < targetsize)
@@ -70,7 +72,7 @@ void			fsCacheSize(char **arg)
 
 void			readFile(char **arg)
 {
-	const char	*filename;
+	char		filename[] = "./fileCacheBenchXXXXXX";
 	unsigned int	targetsize = 0;
 	unsigned int	cursize = 0;
 	int		fd;
@@ -79,15 +81,14 @@ void			readFile(char **arg)
 	int		readed;
 
 	srandom(time(NULL) + getpid());
-	filename = tmpnam(NULL);
-	printf("Temporary file name is %s\n", filename);
 	memset(buf, 42, BUFSIZE);
-	if ((fd = open(filename, O_CREAT | O_TRUNC | O_RDWR | O_RSYNC | O_SYNC, 0600)) == -1)
+	if ((fd = mkstemp(filename)) == -1)
 	{
 		perror("File creation failed");
 		exit(1);
 	}
 	for (targetsize = MINFSIZE; targetsize < MAXFSIZE; targetsize = targetsize << 1)
+	printf("Temporary file name is %s\n", filename);
 	{
 		while (cursize < targetsize)
 		{
