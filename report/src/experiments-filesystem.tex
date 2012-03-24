@@ -168,43 +168,27 @@ size of the file randomly.
 \hline
 Read file size & Hardware cost & Software cost & Prediction & Measured \\ \hline
 
-16MB Local Random		& ?		& ?       & ?        & 0.022  ms/block \\ \hline
-32MB Local Random		& ?		& ?       & ?        & 2.157  ms/block \\ \hline
-64MB Local Random		& ?		& ?       & ?        & 1.357  ms/block \\ \hline
-128MB Local Random 		& ?		& ?       & ?        & 8.980  ms/block \\ \hline
-256MB Local Random		& ?		& ?       & ?        & 9.962  ms/block \\ \hline
-512MB Local Random		& ?		& ?       & ?        & 10.361  ms/block \\ \hline
-1024MB Local Random		& ?		& ?       & ?        & 10.488  ms/block \\ \hline
-2048MB Local Random		& ?		& ?       & ?        & 10.788  ms/block \\ \hline\hline
+16MB Random		& ?		& ?       & ?        & 0.022  ms/block \\ \hline
+32MB Random		& ?		& ?       & ?        & 2.157  ms/block \\ \hline
+64MB Random		& ?		& ?       & ?        & 1.357  ms/block \\ \hline
+128MB Random 		& ?		& ?       & ?        & 8.980  ms/block \\ \hline
+256MB Random		& ?		& ?       & ?        & 9.962  ms/block \\ \hline
+512MB Random		& ?		& ?       & ?        & 10.361  ms/block \\ \hline
+1024MB Random		& ?		& ?       & ?        & 10.488  ms/block \\ \hline
+2048MB Random		& ?		& ?       & ?        & 10.788  ms/block \\ \hline\hline
 
-16MB Local Sequential		& ?		& ?       & ?        & 0.070   ms/block \\ \hline
-32MB Local Sequential		& ?		& ?       & ?        & 0.717   ms/block \\ \hline
-64MB Local Sequential		& ?		& ?       & ?        & 0.439   ms/block \\ \hline
-128MB Local Sequential 	& ?		& ?       & ?        & 6.876   ms/block \\ \hline
-256MB Local Sequential	& ?		& ?       & ?        & 7.717   ms/block \\ \hline
-512MB Local Sequential	& ?		& ?       & ?        & 8.687   ms/block \\ \hline
-1024MB Local Sequential	& ?		& ?       & ?        & 8.721   ms/block \\ \hline
-2048MB Local Sequential	& ?		& ?       & ?        & 8.826   ms/block \\ \hline\hline
+16MB Sequential		& ?		& ?       & ?        & 0.070   ms/block \\ \hline
+32MB Sequential		& ?		& ?       & ?        & 0.717   ms/block \\ \hline
+64MB Sequential		& ?		& ?       & ?        & 0.439   ms/block \\ \hline
+128MB Sequential 	& ?		& ?       & ?        & 6.876   ms/block \\ \hline
+256MB Sequential	& ?		& ?       & ?        & 7.717   ms/block \\ \hline
+512MB Sequential	& ?		& ?       & ?        & 8.687   ms/block \\ \hline
+1024MB Sequential	& ?		& ?       & ?        & 8.721   ms/block \\ \hline
+2048MB Sequential	& ?		& ?       & ?        & 8.826   ms/block \\ \hline\hline
 
-16MB Remote Random		& ?		& ?       & ?        & 0.026   ms/block \\ \hline
-32MB Remote Random		& ?		& ?       & ?        & 0.025   ms/block \\ \hline
-64MB Remote Random		& ?		& ?       & ?        & 0.026   ms/block \\ \hline
-128MB Remote Random 		& ?		& ?       & ?        & 0.028   ms/block \\ \hline
-256MB Remote Random		& ?		& ?       & ?        & 0.027   ms/block \\ \hline
-512MB Remote Random		& ?		& ?       & ?        & 15.401   ms/block \\ \hline
-1024MB Remote Random		& ?		& ?       & ?        & 58.903   ms/block \\ \hline\hline
-
-16MB Remote Sequential	& ?		& ?       & ?        & 0.029    ms/block \\ \hline
-32MB Remote Sequential	& ?		& ?       & ?        & 0.020    ms/block \\ \hline
-64MB Remote Sequential	& ?		& ?       & ?        & 0.019    ms/block \\ \hline
-128MB Remote Sequential 	& ?		& ?       & ?        & 0.020    ms/block \\ \hline
-256MB Remote Sequential	& ?		& ?       & ?        & 0.019    ms/block \\ \hline
-512MB Remote Sequential	& ?		& ?       & ?        & 4.919    ms/block \\ \hline
-1024MB Remote Sequential	& ?		& ?       & ?        & 8.725    ms/block \\ \hline\hline 
-\hline
 \end{tabular}
 \end{center}
-\caption{File read time\label{tab:file-read-time}}
+\caption{Local read time\label{tab:file-read-time}}
 \end{table}
 
 \begin{figure}[h]
@@ -254,6 +238,23 @@ It implies a minimum latency of 13 ms per block.
 \hline
 Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
+
+16MB Random		& ?		& ?       & ?        & 0.026   ms/block \\ \hline
+32MB Random		& ?		& ?       & ?        & 0.025   ms/block \\ \hline
+64MB Random		& ?		& ?       & ?        & 0.026   ms/block \\ \hline
+128MB Random 		& ?		& ?       & ?        & 0.028   ms/block \\ \hline
+256MB Random		& ?		& ?       & ?        & 0.027   ms/block \\ \hline
+512MB Random		& ?		& ?       & ?        & 15.401   ms/block \\ \hline
+1024MB Random		& ?		& ?       & ?        & 58.903   ms/block \\ \hline\hline
+
+16MB Sequential	& ?		& ?       & ?        & 0.029    ms/block \\ \hline
+32MB Sequential	& ?		& ?       & ?        & 0.020    ms/block \\ \hline
+64MB Sequential	& ?		& ?       & ?        & 0.019    ms/block \\ \hline
+128MB Sequential 	& ?		& ?       & ?        & 0.020    ms/block \\ \hline
+256MB Sequential	& ?		& ?       & ?        & 0.019    ms/block \\ \hline
+512MB Sequential	& ?		& ?       & ?        & 4.919    ms/block \\ \hline
+1024MB Sequential	& ?		& ?       & ?        & 8.725    ms/block \\ \hline\hline 
+
 \end{tabular}
 \end{center}
 \caption{Remote file read time\label{tab:remote-file-access}}
@@ -294,6 +295,15 @@ Each process was reading a given file 5 times and we averaged the result.
 \hline
 Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
+1 process		& ?		& ?       & ?        & 8.942    ms/block \\ \hline
+2 processes	& ?		& ?       & ?        & 2.664    ms/block \\ \hline
+4 processes	& ?		& ?       & ?        & 23.693    ms/block \\ \hline
+8 processes	& ?		& ?       & ?        & 64.129    ms/block \\ \hline
+16 processes	& ?		& ?       & ?        & 121.170    ms/block \\ \hline
+32 processes	& ?		& ?       & ?        & 221.781    ms/block \\ \hline
+
+
+
 \end{tabular}
 \end{center}
 \caption{Contention\label{tab:contention}}
