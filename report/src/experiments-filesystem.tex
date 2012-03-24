@@ -200,22 +200,21 @@ Read file size & Hardware cost & Software cost & Prediction & Measured \\ \hline
 
 
 According to the result shown in table \ref{tab:file-read-time} and figure
-\ref{fig:file-access}, we have a problem.
-
+\ref{fig:file-access}, our disk performances are really bad.
+Small files up to 64MB are cached.
+We didn't excepted to have so bad performances for sequential read.
 
 \paragraph{Success of Methodology}
 We wern't able to measure the performance for small files as ZFS doesn't support
 direct i/o and we couldn't reduce the cache so that the small files doesn't fit
 into the cache.
-
-
-
+Also the latency per block seems to high.
+Due to lack of time we wern't able to retry.
 
 \subsubsection{Remote file read time}
-//NOTE
-Repeat the previous experiment for a remote file system. What is the "network penalty" of accessing files over the network?
-//NOTE
-
+%//NOTE
+%Repeat the previous experiment for a remote file system. What is the "network penalty" of accessing files over the network?
+%//NOTE
 \paragraph{Methodology}
 We configurated the Solaris server to export a filesystem through NFS.
 The filesystem was then mounted on the client side and we ran the same tool as
@@ -264,16 +263,17 @@ Our result presented in the table \ref{tab:remote-file-access} seems to only
 show the client side cache performance.
 All the result except the big random read are lower than what the network card
 permits.
+The large sequential reads are partly cached which significally reduces the
+result.
 
 \paragraph{Success of Methodology}
 We should have repeated the experiment by desactivating the cache on the client
 side but we didn't due to lack of time.
 
-
 \subsubsection{Contention}
-//NOTE
-Report the average time to read one file system block of data as a function of the number of processes simultaneously performing the same operation on different files on the same disk (and not in the file buffer cache).
-//NOTE
+%//NOTE
+%Report the average time to read one file system block of data as a function of the number of processes simultaneously performing the same operation on different files on the same disk (and not in the file buffer cache).
+%//NOTE
 
 \paragraph{Methodology}
 We created 32 files of 128MB (bigger than the minimum filesystem cache size of
@@ -286,7 +286,12 @@ small to experiment with more files.
 Each process was reading a given file 5 times and we averaged the result.
 
 \paragraph{Predictions}
+We are excepting to see the latency per block double or more each time we double
+the simultaneous reads.
+The bandwidth needs to be shared but it also increases the seek time.
 
+This is really dependent of the scheduling policy.
+This mainly hardware cost.
 
 \paragraph{Results}
 \begin{table}
@@ -295,35 +300,29 @@ Each process was reading a given file 5 times and we averaged the result.
 \hline
 Operation & Hardware cost & Software cost & Prediction & Measured \\
 \hline
-1 process		& ?		& ?       & ?        & 8.942    ms/block \\ \hline
-2 processes	& ?		& ?       & ?        & 2.664    ms/block \\ \hline
-4 processes	& ?		& ?       & ?        & 23.693    ms/block \\ \hline
-8 processes	& ?		& ?       & ?        & 64.129    ms/block \\ \hline
-16 processes	& ?		& ?       & ?        & 121.170    ms/block \\ \hline
-32 processes	& ?		& ?       & ?        & 221.781    ms/block \\ \hline
-
-
+1 process	& 8 ms/block	& ?       & ?        & 8.942    ms/block \\ \hline
+2 processes	& 16 ms/block	& ?       & ?        & 2.664    ms/block \\ \hline
+4 processes	& 32 ms/block	& ?       & ?        & 23.693    ms/block \\ \hline
+8 processes	& 64 ms/block	& ?       & ?        & 64.129    ms/block \\ \hline
+16 processes	& 128 ms/block	& ?       & ?        & 121.170    ms/block \\ \hline
+32 processes	& 256 ms/block	& ?       & ?        & 221.781    ms/block \\ \hline
 
 \end{tabular}
 \end{center}
 \caption{Contention\label{tab:contention}}
 \end{table}
 
-
-
 \begin{figure}[h]
 \begin{center}
 \includegraphics[scale=0.8]{contentionPartitionImage}
 \end{center}
 \caption {Contention Partition\label{fig:contention-partition}}
-
 \end{figure}
 
-
-
-
-According to the result shown in \ref{tab:contention}, we
+According to the result shown in \ref{tab:contention}, the kernel seems to
+arrange the io in a way which doesn't exponentially increase the cost per
+operation.
 
 \paragraph{Success of Methodology}
-
-
+Some of our result are showing cache effects, but the overall result seems
+accurate.

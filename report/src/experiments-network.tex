@@ -58,7 +58,9 @@ due to the number of unpredictable equipment the packet need to traverse.
 
 For the remote host, the minimal cost will be around 8 context switches (4 on
 each way).
-This is about 0.24 ms + the cost of the data transfer which is twice 0.12ms so a total of
+We also need to account for the processing time of the switches.
+We can except them to be more efficient, we will count with 0.02ms per switch traversal.
+This is about 0.24 ms + 0.08ms (switchs) + the cost of the data transfer which is twice 0.12ms so a total of
 about 0.48ms.
 
 For the loopback interface we can estimate the cost to two context switchs for
@@ -72,16 +74,18 @@ This would respectivly make about 0.06ms and 0.12ms.
 \paragraph{Results}
 % remote tcp : 4146300.853200 cycles 1.26ms
 % local tcp : 214142.5357 cycles 65 us
+% remote icmp : 1.253 ms
+% local icmp : 0.063ms
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation 		& Hardware cost 	& Software cost 	& Prediction 		& Measured \\ \hline
-Local ICMP rtt		&			&			&			& 		\\ \hline
-Remote ICMP rtt		&			&			&			& 		\\ \hline
-Local TCP rtt		&		& 	&		& 65 $\mu$s\\ \hline
-Remote TCP rtt		&			&			& & 1.26 ms	\\ \hline
+Operation 	& Hardware cost 	& Software cost 	& Prediction 		& Measured \\ \hline
+Local ICMP rtt	& 0 ms	& 0.06 ms & 0.06 ms  & 0.063 ms	\\ \hline
+Local TCP rtt	& 0 ms	& 0.012 ms & 0.012 ms	& 0.065 ms\\ \hline
+Remote ICMP rtt	& 0.12 ms	& 0.32 ms & 0.56ms  & 1.253 ms\\ \hline
+Remote TCP rtt	& 0.12 ms	& 0.32 ms & 0.56ms  & 1.26 ms	\\ \hline
 
 
 \end{tabular}
@@ -89,13 +93,14 @@ Remote TCP rtt		&			&			& & 1.26 ms	\\ \hline
 \caption{Round trip time\label{tab:rtt}}
 \end{table}
 
-As seen in table \ref{tab:rtt}
+As seen in table \ref{tab:rtt}, our estimation for the local latency seems
+accurate.
+The TCP RTT is not way higher.
+We have much overhead due to the number of equipment we are going through.
+
 \paragraph{Success of Methodology}
-
- Compare with the time to perform a ping (ICMP requests are handled at kernel level).
-
-
-
+We wish we had time to test with the hypervisor to see how the latency was
+increasing.
 
 
 
@@ -112,7 +117,7 @@ and reported the averaged result.
 The slowest network switch is switching at the theoritical speed of 100Mb/s.
 We except the switch to be the bottleneck and to be able to handle only 90\% of
 the theoritical 100Mb/s so 11.25MB/s.
-The overhead of TCP/IP is about 1/
+We can estimate the overhead of TCP/IP about 2\% wich gives us about 11MB/s.
 
 For the loopback device, the bottleneck will be the bandwidth of the RAM.
 The data needs to be copied in the kernel buffers on client request, read from
@@ -144,32 +149,47 @@ Remote 	&  11.25 MB/s	& 0 &  11.25MB/s	&  10.56MB/s \\
 \caption{Peak bandwidth\label{tab:peak-bandwidth}}
 \end{table}
 
-As seen in table \ref{tab:peak-bandwidth}
+As seen in table \ref{tab:peak-bandwidth}, our estimation for the loopback are
+accurate.
+We probably underestimated the overhead of the mode switches.
+We also probably underestimated the overhead of TCP.
+
 \paragraph{Success of Methodology}
 To improve the result on the loopback interface, one solution would have been to
-increase the buffer size We may have written more data on the socket but it doesn't sound like the
-bottleneck ?
-
+increase the buffer size.
+Overall our methodology seems to give accurate results.
 
 \subsubsection{Connection overhead}
 \paragraph{Methodology}
-We basicly connected to the remote server and to the looppack device 100,000 times.
+We basicly connected to the remote server and to the loopback device 100,000 times.
+We read the clock before and after the \emph{connnect} system call and did the
+same thing for the \emph{close} system call.
 
 \paragraph{Predictions}
 Due to the topology of the network and the number of equipment to traverse we
-except to connection overhead to be about 6-10 times higher for the remote server.
+except to connection overhead to be about 20 times higher for the remote server.
+We except the connection setup cost to be twice the rttp, so about 2.5ms.
+
+The \emph{close} is asynchronous so we doesn't except any difference between
+remote and local close.
+The cost should be near an expensive call, around 10,000 cycles (0.003 ms).
+
 \paragraph{Results}
 %Connection avg time : 32667528
 %Close avg time : 45015
+%Local
+%Connection avg time : 244397
+%Close avg time : 55428
+
 \begin{table} [h]
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
 Operation & Hardware cost & Software cost & Prediction & Measured \\ \hline
-Local setup 	&  cycles		& 10			&  cycles	&  cycles \\ \hline
-Remote setup	&  cycles		& 10			&  cycles	&  cycles \\ \hline
-Local tear-down 	&  cycles		& 10			&  cycles	&  cycles \\ \hline
-Remote tear-down	&  cycles		& 10			&  cycles	&  cycles \\ \hline
+Local setup 	&  0.12 ms	& 2.48 ms	&  2.5 ms & 0.074 ms \\ \hline
+Remote setup	&  0.12 ms	& 2.48 ms	&  2.5 ms&  9.899 ms \\ \hline
+Local tear-down 	&  0	& 0.003 ms	&  0.003 ms&  0.017 ms \\ \hline
+Remote tear-down	&  0	& 0.003 ms	&  0.003 ms&  0.013 ms \\ \hline
 
 
 
@@ -178,6 +198,8 @@ Remote tear-down	&  cycles		& 10			&  cycles	&  cycles \\ \hline
 \caption{Connection overhead\label{tab:connection-overhead}}
 \end{table}
 
-As seen in table \ref{tab:connection-overhead}
+As seen in table \ref{tab:connection-overhead}, we were optimist on the cost of
+a tcp connection setup.
 
 \paragraph{Success of Methodology}
+Our results seems accurate.
