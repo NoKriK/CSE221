@@ -241,13 +241,14 @@ creation may take 10000 cycles.
 \paragraph{Results}
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{| l | l | l | l | l | l |}
+\begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & H/W cost & S/W cost & Prediction & Measured average & Measured first creation \\
+Operation & H/W cost & S/W cost & Prediction & Measured result \\
 \hline
-fork() process 		& 5000 cycles & 10000 cycles 	& 15000 cycles& 1198519.65 cycles & 2257852 cycles\\ \hline
-thr\_create() thread 	& 100 cycles & 99000 cycles	& 10000 cycles &
-197091.67 cycles & 2233593 cycles\\ \hline
+fork() process first time		& 20 cycles & 10000 cycles 	& 10000 cycles& 2257852 cycles \\ \hline
+fork() process average		& 20 cycles & 10000 cycles 	& 10000 cycles& 1198519.65 cycles \\ \hline
+thr\_create() thread first time	& 20 cycles & 8000 cycles		& 8000 cycles &  2273593 cycles \\ \hline
+thr\_create() thread 	average	& 20 cycles & 8000 cycles		& 8000 cycles &  157433.27 cycles \\ \hline
 \end{tabular}
 \end{center}
 \caption{Task creation time\label{tab:task-creation}}
