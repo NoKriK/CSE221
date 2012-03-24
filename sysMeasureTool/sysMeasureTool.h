@@ -3,6 +3,9 @@
 
 # include <unistd.h>
 # include <stdio.h>
+# ifdef __linux
+#  include <stdint.h>
+# endif
 
 # define LOOPCYCLE gl_loopcycle
 

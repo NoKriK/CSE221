@@ -91,11 +91,19 @@ File size & Hardware bandwidth & Software cost & Prediction & Measured \\
 \caption{Size of file cache\label{tab:file-cache}}
 \end{table}
 
-According to the result shown in table \ref{tab:file-cache}, we can see that the cache
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{fileCacheImage}
+\end{center}
+\caption {File cache\label{fig:file-cache}}
+
+\end{figure}
+
+According to the result shown in table \ref{tab:file-cache} and figure \ref{fig:file-cache}, we can see that the cache
 is between 1280MB and 1408MB.
 Our prediction were correct and the file size cache grew until it would have
 needed to swap out other applications.
-The bandwidth is much lower than excepted
+The bandwidth is much lower than excepted. 
 
 \paragraph{Success of Methodology}
 
@@ -170,7 +178,16 @@ Operation & Hardware cost & Software cost & Prediction & Measured \\
 \caption{File read time\label{tab:file-read-time}}
 \end{table}
 
-According to the result shown in \ref{tab:file-read-time}, we
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{fileAccessImage}
+\end{center}
+\caption {File cache\label{fig:file-access}}
+
+\end{figure}
+
+
+According to the result shown in table \ref{tab:file-read-time} and figure \ref{fig:file-access}, we
 
 
 \paragraph{Success of Methodology}
