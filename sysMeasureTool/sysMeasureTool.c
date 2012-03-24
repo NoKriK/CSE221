@@ -141,12 +141,12 @@ static void	*readAndWritePipe(void *p)
 
 	while (tok)
 	{
-		if (read(pipetable[1], &tok, 1) != 1)
+		if (read(*pipetable, &tok, 1) != 1)
 		{
 			fprintf(stderr, "Pipe read failed\n");
 			exit(1);
 		}
-		if (write(*pipetable, &tok, 1) != 1)
+		if (write(pipetable[3], &tok, 1) != 1)
 		{
 			fprintf(stderr, "Pipe write failed\n");
 			exit(1);
@@ -160,12 +160,12 @@ static void	measurePipe(int *pipetable)
 	char	tok = 42;
 
 	MEASUREOUTLOOP(1, 
-		if (write(pipetable[0], &tok, 1) != 1)
+		if (write(pipetable[1], &tok, 1) != 1)
 		{
 			fprintf(stderr, "Pipe write failed\n");
 			exit(1);
 		}
-		if (read(pipetable[PIPEPROCNB * 2 - 1], &tok, 1) != 1)
+		if (read(pipetable[PIPEPROCNB * 2 - 2], &tok, 1) != 1)
 		{
 			fprintf(stderr, "Pipe read failed\n");
 			exit(1);
@@ -195,7 +195,7 @@ static void		processContextSwitch(char **arg)
 	{
 		if (fork() == 0)
 		{
-			readAndWritePipe(pipetable + i * 2 + 1);
+			readAndWritePipe(pipetable + i * 2);
 			_exit(0);
 		}
 	}
@@ -214,7 +214,7 @@ static void		threadContextSwitch(char **arg)
 	createPipeTab(pipetable, PIPEPROCNB);
 	for (i = 0; i < PIPEPROCNB - 1; ++i)
 	{
-		if (thr_create(NULL, 0, readAndWritePipe, pipetable + i * 2 + 1, 0, NULL))
+		if (thr_create(NULL, 0, readAndWritePipe, pipetable + i * 2, 0, NULL))
 		{
 			fprintf(stderr, "Thread creation failed\n");
 			exit(1);
