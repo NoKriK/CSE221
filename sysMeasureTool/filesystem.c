@@ -87,7 +87,7 @@ void			readFile(char **arg)
 		perror("File creation failed");
 		exit(1);
 	}
-	for (targetsize = MINFSIZE; targetsize <= MAXFSIZE; targetsize = targetsize << 1)
+	for (targetsize = MINFSIZE; targetsize < MAXFSIZE; targetsize = targetsize << 1)
 	{
 		while (cursize < targetsize)
 		{
