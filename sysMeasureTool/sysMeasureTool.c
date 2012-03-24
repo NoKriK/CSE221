@@ -122,7 +122,6 @@ static void	pipeOverhead(char **arg)
 	createPipeTab(pipetable, PIPEPROCNB);
 	MEASUREOUTLOOP(1, 
 	for (i = 0; i < PIPEPROCNB; ++i) {
-		printf("%d\n", i);
 		if (write(pipetable[(i * 2) + 1], &tok, 1) != 1) {
 			perror("Pipe write failed");
 			exit(1);
