@@ -93,6 +93,30 @@ Page fault	& 18.7 ms	& 81.3 ms 	& 100 ms	& 8 ms\\ \hline
 
 
 
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{| l | r | r | r | r |} \hline
+Operation 			& Hardware cost 	& Software cost 	& Prediction	& Measured \\ \hline
+
+%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%
+
+\end{tabular}
+\end{center}
+
+\caption{Summary table: Network}
+
+\end{table}
+
+
+
+
+
+
+
+
+
+
 
 
 \begin{table}[h]
@@ -100,6 +124,25 @@ Page fault	& 18.7 ms	& 81.3 ms 	& 100 ms	& 8 ms\\ \hline
 \begin{tabular}{| l | r | r | r | r |} \hline
 Operation 			& Hardware cost 	& Software cost 	& Prediction	& Measured \\ \hline
 
+128MB  & 4GB/s   & 79ms/GB & 3.59GB/s & 1205.06 MB/s \\ \hline
+256MB  & 4GB/s   & 79ms/GB & 3.59GB/s & 1182.96 MB/s \\ \hline
+384MB  & 4GB/s   & 79ms/GB & 3.59GB/s & 1196.82 MB/s \\ \hline
+512MB  & 4GB/s   & 79ms/GB & 3.59GB/s & 1225.79 MB/s \\ \hline
+640MB  & 4GB/s   & 79ms/GB & 3.59GB/s & 1253.05 MB/s \\ \hline
+768MB  & 4GB/s   & 79ms/GB & 3.59GB/s & 1244.87 MB/s \\ \hline
+896MB  & 4GB/s   & 79ms/GB & 3.59GB/s & 1260.24 MB/s \\ \hline
+1024MB & 4GB/s   & 79ms/GB & 3.59GB/s & 1256.54 MB/s \\ \hline
+1152MB & 4GB/s   & 79ms/GB & 3.59GB/s & 1249.65 MB/s \\ \hline
+1280MB & 4GB/s   & 79ms/GB & 3.59GB/s & 1234.26 MB/s \\ \hline
+1408MB & 100MB/s & ?       & ?        & 84.5288 MB/s \\ \hline
+1536MB & 100MB/s & ?       & ?        & 66.2602 MB/s \\ \hline
+1664MB & 100MB/s & ?       & ?        & 86.7509 MB/s \\ \hline
+1792MB & 100MB/s & ?       & ?        & 77.2734 MB/s \\ \hline
+1920MB & 100MB/s & ?       & ?        & 81.6763 MB/s \\ \hline
+2048MB & 100MB/s & ?       & ?        & 83.2122 MB/s \\ \hline
+2176MB & 100MB/s & ?       & ?        & 80.2009 MB/s \\ \hline
+2304MB & 100MB/s & ?       & ?        & 72.7354 MB/s \\ \hline
+2432MB & 100MB/s & ?       & ?        & 78.0652 MB/s \\ \hline\hline
 
 
 
@@ -112,9 +155,7 @@ Operation 			& Hardware cost 	& Software cost 	& Prediction	& Measured \\ \hline
 
 
 
-
-
-% contention
+% File read time
 
 16MB Local Random		& ?		& ?       & ?        & 0.022  ms/block \\ \hline
 32MB Local Random		& ?		& ?       & ?        & 2.157  ms/block \\ \hline
