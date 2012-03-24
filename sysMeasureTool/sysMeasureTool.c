@@ -122,11 +122,12 @@ static void	pipeOverhead(char **arg)
 	createPipeTab(pipetable, PIPEPROCNB);
 	MEASUREOUTLOOP(1, 
 	for (i = 0; i < PIPEPROCNB; ++i) {
-		if (write(pipetable[i * 2], &tok, 1) != 1) {
-			fprintf(stderr, "Pipe write failed\n");
+		printf("%d\n", i);
+		if (write(pipetable[(i * 2) + 1], &tok, 1) != 1) {
+			perror("Pipe write failed");
 			exit(1);
 		}
-		if (read(pipetable[i * 2 + 1], &tok, 1) != 1) {
+		if (read(pipetable[i * 2], &tok, 1) != 1) {
 			fprintf(stderr, "Pipe read failed\n");
 			exit(1);
 		}
@@ -141,12 +142,12 @@ static void	*readAndWritePipe(void *p)
 
 	while (tok)
 	{
-		if (read(*pipetable, &tok, 1) != 1)
+		if (read(pipetable[1], &tok, 1) != 1)
 		{
 			fprintf(stderr, "Pipe read failed\n");
 			exit(1);
 		}
-		if (write(pipetable[1], &tok, 1) != 1)
+		if (write(*pipetable, &tok, 1) != 1)
 		{
 			fprintf(stderr, "Pipe write failed\n");
 			exit(1);
@@ -173,12 +174,12 @@ static void	measurePipe(int *pipetable)
 	)
 	/* Kill all processes/thread by sending a magic token */
 	tok = 0;
-	if (write(pipetable[0], &tok, 1) != 1)
+	if (write(pipetable[1], &tok, 1) != 1)
 	{
 		fprintf(stderr, "Pipe write failed\n");
 		exit(1);
 	}
-	if (read(pipetable[PIPEPROCNB * 2 - 1], &tok, 1) != 1)
+	if (read(pipetable[PIPEPROCNB * 2 - 2], &tok, 1) != 1)
 	{
 		fprintf(stderr, "Pipe read failed\n");
 		exit(1);
