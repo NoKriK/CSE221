@@ -6,7 +6,8 @@ CC	=	gcc -m64
 
 SRC	=	sysMeasureTool.c	\
 		memory.c		\
-		network.c
+		network.c		\
+		filesystem.c
 
 OBJ     =       $(SRC:.c=.o)
 
