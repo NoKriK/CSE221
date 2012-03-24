@@ -149,8 +149,10 @@ the arguments are put on to the stack on x86-64 CPUs.
 \subsubsection{System call overhead}
 \paragraph{Methodology}
 We choosed the getpid() system call to test the overhead for a minimal system
-call as it's supposed to be the least expensive system call.
+call as it's supposed to be the least expensive system call. The reason is that all what getpid() does is to read the process ID and return it, which means no network access, no disk access and etc.
 We then ran it 10,000 times to get an averaged result.
+
+
 
 \paragraph{Predictions}
 System call are expected to be more expensive than simple procedure call as they

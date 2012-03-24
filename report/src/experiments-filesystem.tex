@@ -168,7 +168,50 @@ In our test program, each read is 2048 bits, the worst result should be about 11
 \begin{center}
 \begin{tabular}{| l | l | l | l | l |}
 \hline
-Operation & Hardware cost & Software cost & Prediction & Measured \\
+Read file size & Hardware cost & Software cost & Prediction & Measured \\ \hline
+
+16MB Local Random		& ?		& ?       & ?        & 0.022  ms/block \\ \hline
+32MB Local Random		& ?		& ?       & ?        & 2.157  ms/block \\ \hline
+64MB Local Random		& ?		& ?       & ?        & 1.357  ms/block \\ \hline
+128MB Local Random 		& ?		& ?       & ?        & 8.980  ms/block \\ \hline
+256MB Local Random		& ?		& ?       & ?        & 9.962  ms/block \\ \hline
+512MB Local Random		& ?		& ?       & ?        & 10.361  ms/block \\ \hline
+1024MB Local Random		& ?		& ?       & ?        & 10.488  ms/block \\ \hline
+2048MB Local Random		& ?		& ?       & ?        & 10.788  ms/block \\ \hline\hline
+
+16MB Local Sequential		& ?		& ?       & ?        & 0.070   ms/block \\ \hline
+32MB Local Sequential		& ?		& ?       & ?        & 0.717   ms/block \\ \hline
+64MB Local Sequential		& ?		& ?       & ?        & 0.439   ms/block \\ \hline
+128MB Local Sequential 	& ?		& ?       & ?        & 6.876   ms/block \\ \hline
+256MB Local Sequential	& ?		& ?       & ?        & 7.717   ms/block \\ \hline
+512MB Local Sequential	& ?		& ?       & ?        & 8.687   ms/block \\ \hline
+1024MB Local Sequential	& ?		& ?       & ?        & 8.721   ms/block \\ \hline
+2048MB Local Sequential	& ?		& ?       & ?        & 8.826   ms/block \\ \hline\hline
+
+16MB Remote Random		& ?		& ?       & ?        & 0.026   ms/block \\ \hline
+32MB Remote Random		& ?		& ?       & ?        & 0.025   ms/block \\ \hline
+64MB Remote Random		& ?		& ?       & ?        & 0.026   ms/block \\ \hline
+128MB Remote Random 		& ?		& ?       & ?        & 0.028   ms/block \\ \hline
+256MB Remote Random		& ?		& ?       & ?        & 0.027   ms/block \\ \hline
+512MB Remote Random		& ?		& ?       & ?        & 15.401   ms/block \\ \hline
+1024MB Remote Random		& ?		& ?       & ?        & 58.903   ms/block \\ \hline\hline
+
+16MB Remote Sequential	& ?		& ?       & ?        & 0.029    ms/block \\ \hline
+32MB Remote Sequential	& ?		& ?       & ?        & 0.020    ms/block \\ \hline
+64MB Remote Sequential	& ?		& ?       & ?        & 0.019    ms/block \\ \hline
+128MB Remote Sequential 	& ?		& ?       & ?        & 0.020    ms/block \\ \hline
+256MB Remote Sequential	& ?		& ?       & ?        & 0.019    ms/block \\ \hline
+512MB Remote Sequential	& ?		& ?       & ?        & 4.919    ms/block \\ \hline
+1024MB Remote Sequential	& ?		& ?       & ?        & 8.725    ms/block \\ \hline\hline 
+
+
+
+
+
+
+
+
+
 \hline
 \end{tabular}
 \end{center}
@@ -179,7 +222,7 @@ Operation & Hardware cost & Software cost & Prediction & Measured \\
 \begin{center}
 \includegraphics[scale=0.8]{fileAccessImage}
 \end{center}
-\caption {File cache\label{fig:file-access}}
+\caption {File read time\label{fig:file-access}}
 
 \end{figure}
 
