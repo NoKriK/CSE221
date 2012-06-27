@@ -1,3 +1,8 @@
-just have a try to see if if I can and how do I "save"
+Small academic project writtent for a graduate class at UCSD.
+This project is intended to measure performances of an operating system
+and of the hardware components.
 
-Inline assembly : http://gcc.gnu.org/onlinedocs/gcc/Inline.html
+This work is largely inspired from the '96 lmbench paper accessible online :
+http://www.bitmover.com/lmbench/
+
+It used to compile under Solaris and Linux.
